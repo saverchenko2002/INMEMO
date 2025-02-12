@@ -2,7 +2,7 @@ from PyQt6.QtGui import QAction
 from typing import Callable
 from abc import abstractmethod
 
-from menu.command.base_command import Command
+from menu.command.base_command import BaseCommand
 
 
 class BaseAction(QAction):
@@ -13,4 +13,4 @@ class BaseAction(QAction):
 
     @abstractmethod
     def init_command(self):
-        return Command()
+        return BaseCommand()

@@ -3,7 +3,7 @@ from abc import ABC, abstractmethod
 from core.command_publisher import CommandPublisher
 
 
-class Command(ABC):
+class BaseCommand(ABC):
     @abstractmethod
     def execute(self):
         pass
