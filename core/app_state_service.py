@@ -1,5 +1,6 @@
 from core.state_manager import StateManager
 from core.history_manager import HistoryManager
+from core.event_bus import EventBus
 
 
 class AppStateService:
@@ -10,35 +11,24 @@ class AppStateService:
             cls._instance = super().__new__(cls)
             cls._instance.state_manager = StateManager()
             cls._instance.history_manager = HistoryManager()
-            cls._instance.subscribers = {}
+            cls._instance.event_bus = EventBus()
         return cls._instance
 
-    def get_state(self):
-        return self.state_manager.get_state()
+    def get_state(self, key):
+        return self.state_manager.get_state_value(key)
 
     def set_state(self, key, value):
-        self.state_manager.set_state(key, value)
-        self.history_manager.add_to_history(self.state_manager.get_state())
-        print('все записали ёбана')
-        self.notify_subscribers(key)
-        print('всех оповестили ёбана')
+        self.state_manager.set_state_value(key, value)
+        print('отработал стейт')
+        self.history_manager.add_to_history(self.state_manager.get_snapshot())
+        print('отработала история')
+        self.event_bus.notify(key, value)
 
     def undo(self):
-        self.history_manager.undo(self.state_manager.get_state())
+        self.history_manager.undo(self.state_manager.get_snapshot())
 
     def redo(self):
-        self.history_manager.redo(self.state_manager.get_state())
+        self.history_manager.redo(self.state_manager.get_snapshot())
 
     def subscribe(self, key, component):
-        if key not in self.subscribers:
-            self.subscribers[key] = []
-        self.subscribers[key].append(component)
-        print('отсос на подписке')
-        print(self.subscribers)
-
-    def notify_subscribers(self, key):
-        print(self.subscribers)
-        for component in self.subscribers[key]:
-            print(key + 'ключ')
-            print(type(component))
-            component.react_state_update(key)
+        self.event_bus.subscribe(key, component)

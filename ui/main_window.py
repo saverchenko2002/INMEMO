@@ -8,6 +8,7 @@ from core.command_publisher import CommandPublisher
 from core.command_executor import CommandExecutor
 
 from ui.components.directory_component import DirectoryComponent
+from ui.components.app_status_component import AppStatusComponent
 
 
 class MainWindow(QMainWindow):
@@ -23,7 +24,13 @@ class MainWindow(QMainWindow):
         self.work_area = None
         self.bottom_area = None
 
+        self.image_area = None
+        self.tabs_area = None
+
         self.directory_component = None
+        self.app_status_component = None
+
+        self.work_area_layout = None
         self.bottom_layout = None
 
         self.init_ui()
@@ -43,14 +50,26 @@ class MainWindow(QMainWindow):
         self.bottom_area = QWidget()
         self.bottom_area.setObjectName("BottomArea")
 
+        self.image_area = QWidget()
+        self.image_area.setObjectName("ImageArea")
+        self.tabs_area = QWidget()
+        self.tabs_area.setObjectName("TabsArea")
+
         self.directory_component = DirectoryComponent()
+        self.app_status_component = AppStatusComponent()
 
         main_layout.addWidget(self.top_area, 1)
         main_layout.addWidget(self.work_area, 8)
         main_layout.addWidget(self.bottom_area, 1)
 
+        self.work_area_layout = QHBoxLayout()
+        self.work_area_layout.addWidget(self.image_area, 7)
+        self.work_area_layout.addWidget(self.tabs_area, 3)
+        self.work_area.setLayout(self.work_area_layout)
+
         self.bottom_layout = QHBoxLayout()
-        self.bottom_layout.addWidget(self.directory_component)
+        self.bottom_layout.addWidget(self.app_status_component, 2)
+        self.bottom_layout.addWidget(self.directory_component, 8)
         self.bottom_area.setLayout(self.bottom_layout)
 
         central_widget.setLayout(main_layout)
@@ -69,52 +88,13 @@ class MainWindow(QMainWindow):
              #BottomArea {
                  border: 1px solid black
              }
+             #ImageArea {
+                 border: 1px solid blue
+             }
+             #TabsArea {
+                 border: 1px solid black
+             }
          """)
-
-
-
-    def outdated(self):
-        layout = QVBoxLayout()  # container
-
-        tools_panel = QHBoxLayout()
-        main_panel = QHBoxLayout()
-        status_panel = QHBoxLayout()
-
-        tools_widget = QWidget()
-        tools_widget.setLayout(tools_panel)
-
-        tools_widget.setStyleSheet("border: 1px solid green;")
-
-        main_widget = QWidget()
-        main_widget.setLayout(main_panel)
-        main_widget.setStyleSheet("border: 1px solid red;")
-
-        status_widget = QWidget()
-        status_widget.setLayout(status_panel)
-        status_widget.setStyleSheet("border: 1px solid black;")
-
-        label1 = QLabel("Добро пожаловать в приложение!1")
-        label2 = QLabel("Добро пожаловать в приложение!2Добро пожаловать в приложение!2Добро пожаловать в приложение!2")
-
-        main_panel.addWidget(PwdComponent(PwdModel('putin')))
-        main_panel.addWidget(label1)
-        main_panel.addWidget(label2)
-
-        status_panel.addWidget(PwdComponent(PwdModel('putin')))
-
-        layout.addWidget(tools_widget)
-        layout.addWidget(main_widget)
-        layout.addWidget(status_widget)
-
-        layout.setStretch(0, 1)
-        layout.setStretch(1, 8)
-        layout.setStretch(2, 1)
-
-        container = QWidget()
-        container.setLayout(layout)
-        self.setCentralWidget(container)
-
-
 
     def close_event(self, event):
         CommandPublisher.unsubscribe(self)

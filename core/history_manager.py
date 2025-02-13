@@ -1,16 +1,16 @@
 class HistoryManager:
     def __init__(self):
-        self.history = []
-        self.redo_stack = []
+        self._history = []
+        self._redo_stack = []
 
     def add_to_history(self, state):
-        self.history.append(state)
-        self.redo_stack.clear()
+        self._history.append(state.copy())
+        self._redo_stack.clear()
 
     def undo(self, state):
-        self.redo_stack.append(state.copy())
-        return self.history.pop()
+        self._redo_stack.append(state.copy())
+        return self._history.pop()
 
     def redo(self, state):
-        self.history.append(state.copy())
-        return self.redo_stack.pop()
+        self._history.append(state.copy())
+        return self._redo_stack.pop()

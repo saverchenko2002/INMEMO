@@ -1,13 +1,12 @@
 class StateManager:
     def __init__(self):
-        self.state = {}
+        self._state = {}
 
-    def get_state(self):
-        print('getstate  ebana')
-        print(self.state)
-        return self.state
+    def get_snapshot(self):
+        return self._state.copy()
 
-    def set_state(self, key, value):
-        self.state[key] = value
-        print(self.state)
-        print('state ebana')
+    def get_state_value(self, key):
+        return self._state[key]
+
+    def set_state_value(self, key, value):
+        self._state[key] = value
