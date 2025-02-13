@@ -1,7 +1,8 @@
-from PyQt6.QtWidgets import QMainWindow, QLabel, QWidget, QApplication
+from PyQt6.QtWidgets import QMainWindow, QWidget, QApplication
 
 from PyQt6.QtWidgets import QHBoxLayout, QVBoxLayout
 
+from config.constants import AppNameConstants
 
 from menu.menu_bar import MenuBar
 from core.command_publisher import CommandPublisher
@@ -9,6 +10,7 @@ from core.command_executor import CommandExecutor
 
 from ui.components.directory_component import DirectoryComponent
 from ui.components.app_status_component import AppStatusComponent
+from ui.components.tabs_component import TabsComponent
 
 
 class MainWindow(QMainWindow):
@@ -16,7 +18,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.resize(QApplication.primaryScreen().size().width()//2, QApplication.primaryScreen().size().height()//2)
 
-        self.setWindowTitle("Image Processing App")
+        self.setWindowTitle(AppNameConstants.APPLICATION_TITLE.value)
         self.setMenuBar(MenuBar(self))
         CommandPublisher.subscribe(self)
 
@@ -29,6 +31,7 @@ class MainWindow(QMainWindow):
 
         self.directory_component = None
         self.app_status_component = None
+        self.tabs_component = None
 
         self.work_area_layout = None
         self.bottom_layout = None
@@ -57,10 +60,15 @@ class MainWindow(QMainWindow):
 
         self.directory_component = DirectoryComponent()
         self.app_status_component = AppStatusComponent()
+        self.tabs_component = TabsComponent()
 
         main_layout.addWidget(self.top_area, 1)
         main_layout.addWidget(self.work_area, 8)
         main_layout.addWidget(self.bottom_area, 1)
+
+        tabs_layout = QVBoxLayout()
+        tabs_layout.addWidget(self.tabs_component)
+        self.tabs_area.setLayout(tabs_layout)
 
         self.work_area_layout = QHBoxLayout()
         self.work_area_layout.addWidget(self.image_area, 7)
