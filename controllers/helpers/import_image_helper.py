@@ -6,3 +6,4 @@ def import_image():
     file, _ = QFileDialog.getOpenFileName(None, "Выберите изображение", "",
                                           "Image Files (*.png *.jpg *.bmp);;All Files (*)", options=options)
 
+    print(file)

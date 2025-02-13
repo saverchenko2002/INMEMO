@@ -1,3 +1,5 @@
+from core.app_state_service import AppStateService
+
 from controllers.base_controller import BaseController
 
 from menu.file_commands.new_project_command import NewProjectCommand
@@ -27,6 +29,9 @@ class FileController(BaseController):
     def handle_new_project(self, command):
 
         print(f"Обработка команды {command.__class__.__name__}")
+        print('FileController сначала я получаю доступ')
 
-        new_project()
+        AppStateService().set_state('project_directory', new_project())
+
+        print('FileController сначала я получаю доступ')
 
