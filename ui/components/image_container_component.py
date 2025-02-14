@@ -29,6 +29,7 @@ class ImageContainerComponent(QWidget):
 
     def react_state_update(self, key, value):
         self.model[key] = value
+        print('ты живой??', value)
         self.set_image(value)
 
     # def resizeEvent(self, event):

@@ -4,8 +4,8 @@ from enum import Enum
 class AppStateConstants(Enum):
     PROJECT_DIRECTORY = 'project_directory'
     IMPORT_DIRECTORY = 'import_directory'
-    TAB_DIRECTORIES = 'tab_directories'
 
+    TAB_IMAGES_MAP = '_tab_images_map'
     PRIMARY_IMAGE_PATH = 'primary_image_path'
 
     APP_STATUS = 'app_status'

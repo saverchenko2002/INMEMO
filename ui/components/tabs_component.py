@@ -1,11 +1,14 @@
-from core.app_state_service import AppStateService
-
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QListView
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTabWidget
 
 from models.tabs_component_model import TabsComponentModel
 
-import re
+from core.decorators.state_subscribe_decorator import state_model_subscribe
 
+from ui.components.thumbnail_listview_component import ThumbnailListviewComponent
+
+import os
+
+@state_model_subscribe
 class TabsComponent(QWidget):
     def __init__(self):
         super().__init__()
@@ -19,32 +22,72 @@ class TabsComponent(QWidget):
 
         self.setStyleSheet("border: 1px solid red;")
 
-        for field in vars(self.model).keys():
-            print(f'подписались ежжи по полю{field}')
-            print(self)
-            AppStateService().subscribe(field, self)
-
     def react_state_update(self, key, value):
-        print('я внутри tabs component бро')
-        print(key)
-        print(value)
-        if value:
-            first_item = next(iter(value))
-            tab_name = re.search(r'[^\\/]+$', first_item).group()
-            print(tab_name)
-            self.add_tab(tab_name)
 
-        # print('DirectoryComponentModel сначала я получаю доступ')
-        # print('DirectoryComponentModel сначала я получаю доступ')
-        # self.model[key] = value
-        # self.directory_label.setText(self.model[key])
+        if self.model.tab_images_map is value:
+            print("self.model.tab_images_map и value — это один и тот же объект")
+        else:
+            print("self.model.tab_images_map и value — это разные объекты")
 
-    def add_tab(self, name):
+        print('вызов до всех методов')
+        print(self.model.tab_images_map)
+
+        updated_tabs = self.compare_tab_images(value)
+
+        print('ты даун ДО СЕТА')
+        self.model.tab_images_map = value
+        print('ты даун после СЕТА')
+
+        for directory, images in updated_tabs.items():
+            tab_name = os.path.basename(directory)
+
+            if tab_name not in self.get_existing_tabs():
+                self.add_tab(tab_name, images)
+                print('ДОБАВИЛ ТАБУ ДЕД')
+            else:
+                self.update_tab_images(tab_name, images)
+            # self.update_tab_images(tab_name, images)
+
+    def add_tab(self, name, images):
         tab = QWidget()
         tab_layout = QVBoxLayout()
 
-        list_view = QListView()
-        tab_layout.addWidget(list_view)
-
+        thumbnail_listview = ThumbnailListviewComponent(images)
+        tab_layout.addWidget(thumbnail_listview)
         tab.setLayout(tab_layout)
+
         self.tab_widget.addTab(tab, name)
+
+    def update_tab_images(self, tab_name, images):
+        tab_index = self.get_existing_tabs().index(tab_name)
+
+        existing_tab = self.tab_widget.widget(tab_index)
+        thumbnail_listview = existing_tab.layout().itemAt(0).widget()
+        if isinstance(thumbnail_listview, ThumbnailListviewComponent):
+            thumbnail_listview.update_listview(images)
+        else:
+            print("Ошибка: thumbnail_listview не является ThumbnailListviewComponent")
+
+
+
+    def compare_tab_images(self, value):
+        updated_tabs = {}
+
+        print(value)
+
+        for directory, images in value.items():
+            if directory in self.model.tab_images_map:
+                existing_images = self.model.tab_images_map[directory]
+
+                added_images = images - existing_images
+
+                if added_images:
+                    updated_tabs[directory] = added_images
+
+            else:
+                updated_tabs[directory] = images
+
+        return updated_tabs
+
+    def get_existing_tabs(self):
+        return [self.tab_widget.tabText(i) for i in range(self.tab_widget.count())]
