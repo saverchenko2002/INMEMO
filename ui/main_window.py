@@ -11,6 +11,7 @@ from core.command_executor import CommandExecutor
 from ui.components.directory_component import DirectoryComponent
 from ui.components.app_status_component import AppStatusComponent
 from ui.components.tabs_component import TabsComponent
+from ui.components.image_container_component import ImageContainerComponent
 
 
 class MainWindow(QMainWindow):
@@ -32,6 +33,7 @@ class MainWindow(QMainWindow):
         self.directory_component = None
         self.app_status_component = None
         self.tabs_component = None
+        self.image_container_component = None
 
         self.work_area_layout = None
         self.bottom_layout = None
@@ -61,10 +63,15 @@ class MainWindow(QMainWindow):
         self.directory_component = DirectoryComponent()
         self.app_status_component = AppStatusComponent()
         self.tabs_component = TabsComponent()
+        self.image_container_component = ImageContainerComponent()
 
         main_layout.addWidget(self.top_area, 1)
         main_layout.addWidget(self.work_area, 8)
         main_layout.addWidget(self.bottom_area, 1)
+
+        image_container_layout = QVBoxLayout()
+        image_container_layout.addWidget(self.image_container_component)
+        self.image_area.setLayout(image_container_layout)
 
         tabs_layout = QVBoxLayout()
         tabs_layout.addWidget(self.tabs_component)
