@@ -2,7 +2,7 @@ from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTabWidget
 
 from models.tabs_component_model import TabsComponentModel
 
-from core.decorators.state_subscribe_decorator import state_model_subscribe
+from utils.decorators.state_subscribe_decorator import state_model_subscribe
 
 from ui.components.thumbnail_listview_component import ThumbnailListviewComponent
 
@@ -24,29 +24,16 @@ class TabsComponent(QWidget):
 
     def react_state_update(self, key, value):
 
-        if self.model.tab_images_map is value:
-            print("self.model.tab_images_map и value — это один и тот же объект")
-        else:
-            print("self.model.tab_images_map и value — это разные объекты")
-
-        print('вызов до всех методов')
-        print(self.model.tab_images_map)
-
         updated_tabs = self.compare_tab_images(value)
-
-        print('ты даун ДО СЕТА')
         self.model.tab_images_map = value
-        print('ты даун после СЕТА')
 
         for directory, images in updated_tabs.items():
             tab_name = os.path.basename(directory)
 
             if tab_name not in self.get_existing_tabs():
                 self.add_tab(tab_name, images)
-                print('ДОБАВИЛ ТАБУ ДЕД')
             else:
                 self.update_tab_images(tab_name, images)
-            # self.update_tab_images(tab_name, images)
 
     def add_tab(self, name, images):
         tab = QWidget()
@@ -63,12 +50,7 @@ class TabsComponent(QWidget):
 
         existing_tab = self.tab_widget.widget(tab_index)
         thumbnail_listview = existing_tab.layout().itemAt(0).widget()
-        if isinstance(thumbnail_listview, ThumbnailListviewComponent):
-            thumbnail_listview.update_listview(images)
-        else:
-            print("Ошибка: thumbnail_listview не является ThumbnailListviewComponent")
-
-
+        thumbnail_listview.update_listview(images)
 
     def compare_tab_images(self, value):
         updated_tabs = {}
@@ -91,3 +73,5 @@ class TabsComponent(QWidget):
 
     def get_existing_tabs(self):
         return [self.tab_widget.tabText(i) for i in range(self.tab_widget.count())]
+
+

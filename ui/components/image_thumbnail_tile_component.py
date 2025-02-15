@@ -8,6 +8,7 @@ from models.image_thumbnail_tile_component_model import ImageThumbnailTileCompon
 from core.app_state_service import AppStateService
 from config.constants import AppStateConstants
 
+
 class ImageThumbnailTileComponent(QWidget):
     def __init__(self, image_path):
         super().__init__()

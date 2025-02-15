@@ -29,8 +29,6 @@ def copy_image(source_path, destination_folder):
     shutil.copy(source_path, destination_path)
     return str(destination_path)
 
-#ordered dict  уникальность ключей импорт одного и того же изображения? подумай!
-
 
 def update_tab_images_map(import_directory, image_file_path, tab_images_map):
     updated_map = copy.deepcopy(tab_images_map)

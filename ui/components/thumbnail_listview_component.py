@@ -16,8 +16,6 @@ class ThumbnailListviewComponent(QWidget):
         self.create_listview()
 
     def create_listview(self):
-        print('ВСЕ НА МЕСТЕ СПОРТСМЕНЫ')
-        print(self.model.images)
         for image_path in self.model.images:
             self.add_tile(image_path)
 
@@ -26,17 +24,7 @@ class ThumbnailListviewComponent(QWidget):
         self.layout.addWidget(thumbnail)
 
     def update_listview(self, images):
-        print("Обновление списка плиток. Новые изображения:", images)
         self.model.images = self.model.images.union(images)
 
         for image_path in images:
             self.add_tile(image_path)
-        # self.clear_listview()
-        # self.model.images = images
-        # self.create_listview()
-
-    def clear_listview(self):
-        for i in reversed(range(self.layout.count())):
-            widget = self.layout.itemAt(i).widget()
-            if widget is not None:
-                widget.deleteLater()

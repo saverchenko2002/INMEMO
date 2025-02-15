@@ -1,4 +1,3 @@
-from core.app_state_service import AppStateService
 from config.constants import AppStateConstants, AppStatusConstants
 
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
@@ -7,7 +6,10 @@ from ui.components.loading_dialog_component import LoadingDialogComponent
 
 from models.app_status_component_model import AppStatusComponentModel
 
+from utils.decorators.state_subscribe_decorator import state_model_subscribe
 
+
+@state_model_subscribe
 class AppStatusComponent(QWidget):
     def __init__(self):
         super().__init__()
@@ -26,16 +28,7 @@ class AppStatusComponent(QWidget):
 
         self.setStyleSheet("border: 1px solid blue;")
 
-        for field in vars(self.model).keys():
-            print(f'подписались ежжи по полю{field}')
-            print(self)
-            AppStateService().subscribe(field, self)
-
     def react_state_update(self, key, value):
-        print(key)
-        print(value)
-        print('DirectoryComponentModel сначала я получаю доступ')
-        print('DirectoryComponentModel сначала я получаю доступ')
         self.model[key] = value
         self.app_status.setText(self.model[key])
 

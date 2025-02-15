@@ -1,16 +1,18 @@
 from core.app_state_service import AppStateService
-from config.constants import AppStateConstants, AppStatusConstants
-
+from config.constants import AppStateConstants
 
 from controllers.base_controller import BaseController
 
 from menu.file_commands.new_project_command import NewProjectCommand
 from menu.file_commands.import_image_command import ImportImageCommand
 
-from core.decorators.app_status_decorator import with_app_status_change
+from utils.decorators.app_status_decorator import with_app_status_change
 
-from controllers.helpers.import_image_helper import (get_import_directory, get_image_path, copy_image,
+from controllers.helpers.import_image_helper import (get_import_directory,
+                                                     get_image_path,
+                                                     copy_image,
                                                      update_tab_images_map)
+
 from controllers.helpers.new_project_helper import new_project
 
 
@@ -39,19 +41,11 @@ class FileController(BaseController):
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_images_map)
 
-
-
-
-
-
-
     def handle_new_project(self, command):
 
         print(f"Обработка команды {command.__class__.__name__}")
-        print('FileController сначала я получаю доступ')
 
         AppStateService().set_state(AppStateConstants.PROJECT_DIRECTORY.value, new_project())
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, {})
 
-        print('FileController сначала я получаю доступ')
 

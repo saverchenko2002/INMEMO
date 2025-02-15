@@ -19,9 +19,7 @@ class AppStateService:
 
     def set_state(self, key, value):
         self.state_manager.set_state_value(key, value)
-        print('отработал стейт')
         self.history_manager.add_to_history(self.state_manager.get_snapshot())
-        print('отработала история', key, value)
         self.event_bus.notify(key, value)
 
     def undo(self):
@@ -32,3 +30,5 @@ class AppStateService:
 
     def subscribe(self, key, component):
         self.event_bus.subscribe(key, component)
+
+
