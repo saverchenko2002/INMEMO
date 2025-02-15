@@ -1,22 +1,22 @@
 from core.app_state_service import AppStateService
 from config.constants import AppStateConstants
 
-from controllers.base_controller import BaseController
+from core.base.controller import Controller
 
 from menu.file_commands.new_project_command import NewProjectCommand
 from menu.file_commands.import_image_command import ImportImageCommand
 
 from utils.decorators.app_status_decorator import with_app_status_change
 
-from controllers.helpers.import_image_helper import (get_import_directory,
-                                                     get_image_path,
-                                                     copy_image,
-                                                     update_tab_images_map)
+from controllers.menu_controllers_helpers.import_image_helper import (get_import_directory,
+                                                                      get_image_path,
+                                                                      copy_image,
+                                                                      update_tab_images_map)
 
-from controllers.helpers.new_project_helper import new_project
+from controllers.menu_controllers_helpers.new_project_helper import new_project
 
 
-class FileController(BaseController):
+class FileController(Controller):
     def __init__(self):
         super().__init__()
 

@@ -1,13 +1,13 @@
 from abc import ABC, abstractmethod
 
 
-class BaseController(ABC):
+class Controller(ABC):
     def __init__(self):
         self.handlers = {}
 
     def execute(self, command):
         handler = self.handlers.get(command.__class__)
-
+        print('и хендлер достал по классу команды епт')
         if handler:
             handler(command)
         else:

@@ -2,14 +2,16 @@ import os
 
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout
 from PyQt6.QtGui import QPixmap
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, pyqtSignal
 
 from models.image_thumbnail_tile_component_model import ImageThumbnailTileComponentModel
-from core.app_state_service import AppStateService
-from config.constants import AppStateConstants
+from menu.file_commands.import_image_command import ImportImageCommand
 
 
 class ImageThumbnailTileComponent(QWidget):
+
+    clicked = pyqtSignal(str)
+
     def __init__(self, image_path):
         super().__init__()
 
@@ -42,4 +44,4 @@ class ImageThumbnailTileComponent(QWidget):
         # Обрабатываем клик ЛКМ
         super().mousePressEvent(event)
         print('ПОЛЕТЕЛ',self.model.image_path)
-        AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, self.model.image_path)
+        self.clicked.emit(self.model.image_path)

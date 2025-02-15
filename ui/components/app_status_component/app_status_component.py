@@ -2,7 +2,7 @@ from config.constants import AppStateConstants, AppStatusConstants
 
 from PyQt6.QtWidgets import QWidget, QLabel, QVBoxLayout
 
-from ui.components.loading_dialog_component import LoadingDialogComponent
+from ui.components.loading_dialog_component.loading_dialog_component import LoadingDialogComponent
 
 from models.app_status_component_model import AppStatusComponentModel
 

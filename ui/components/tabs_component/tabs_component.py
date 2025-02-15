@@ -4,7 +4,11 @@ from models.tabs_component_model import TabsComponentModel
 
 from utils.decorators.state_subscribe_decorator import state_model_subscribe
 
-from ui.components.thumbnail_listview_component import ThumbnailListviewComponent
+from ui.components.thumbnail_listview_component.thumbnail_listview_component import ThumbnailListviewComponent
+
+from ui.components.tabs_component.tabs_component_commands.change_primary_image_command import ChangePrimaryImageCommand
+
+from config.constants import AppStateConstants
 
 import os
 
@@ -40,6 +44,7 @@ class TabsComponent(QWidget):
         tab_layout = QVBoxLayout()
 
         thumbnail_listview = ThumbnailListviewComponent(images)
+        thumbnail_listview.list_item_clicked.connect(self.on_image_selected)
         tab_layout.addWidget(thumbnail_listview)
         tab.setLayout(tab_layout)
 
@@ -73,5 +78,9 @@ class TabsComponent(QWidget):
 
     def get_existing_tabs(self):
         return [self.tab_widget.tabText(i) for i in range(self.tab_widget.count())]
+
+    def on_image_selected(self, image_path):
+        print('IMAGE_PATH', image_path)
+        return ChangePrimaryImageCommand(**{AppStateConstants.PRIMARY_IMAGE_PATH.value: image_path})
 
 

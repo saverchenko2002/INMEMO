@@ -8,10 +8,10 @@ from menu.menu_bar import MenuBar
 from core.command_publisher import CommandPublisher
 from core.command_executor import CommandExecutor
 
-from ui.components.directory_component import DirectoryComponent
-from ui.components.app_status_component import AppStatusComponent
-from ui.components.tabs_component import TabsComponent
-from ui.components.image_container_component import ImageContainerComponent
+from ui.components.directory_component.directory_component import DirectoryComponent
+from ui.components.app_status_component.app_status_component import AppStatusComponent
+from ui.components.tabs_component.tabs_component import TabsComponent
+from ui.components.image_container_component.image_container_component import ImageContainerComponent
 
 
 class MainWindow(QMainWindow):
@@ -119,6 +119,7 @@ class MainWindow(QMainWindow):
     def on_command_received(command):
         print('ZZZZZZZZZZZ')
         print(command)
+        print(command is None, 'КОМАНДА НЕ НАН БЛЯТЬ')
         CommandExecutor.execute(command)
 
 

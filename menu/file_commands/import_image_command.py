@@ -1,8 +1,8 @@
-from menu.command.base_command import BaseCommand
-from menu.command.file_command import FileCommand
+from core.base.command import Command
+from menu.command_classes.file_command import FileCommand
 
 
-class ImportImageCommand(BaseCommand, FileCommand):
+class ImportImageCommand(Command, FileCommand):
     def __init__(self):
         print('init class ImportImageCommand')
         self.notify_observers()

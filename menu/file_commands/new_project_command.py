@@ -1,8 +1,8 @@
-from menu.command.base_command import BaseCommand
-from menu.command.file_command import FileCommand
+from core.base.command import Command
+from menu.command_classes.file_command import FileCommand
 
 
-class NewProjectCommand(BaseCommand, FileCommand):
+class NewProjectCommand(Command, FileCommand):
     def __init__(self):
         print('init class NewProjectCommand')
         self.notify_observers()
