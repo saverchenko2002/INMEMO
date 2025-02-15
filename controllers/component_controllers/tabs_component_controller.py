@@ -19,3 +19,5 @@ class TabsComponentController(Controller):
         input_primary_image_path = command.__dict__.get(AppStateConstants.PRIMARY_IMAGE_PATH.value)
         if primary_image_path != input_primary_image_path:
             AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, input_primary_image_path)
+
+

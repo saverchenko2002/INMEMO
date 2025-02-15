@@ -23,6 +23,7 @@ class ImageContainerComponent(QWidget):
         self.setLayout(layout)
 
     def react_state_update(self, key, value):
+        print('ключ БАЛЯТЬ) ', key)
         self.model[key] = value
         self.set_image(value)
 
@@ -34,3 +35,5 @@ class ImageContainerComponent(QWidget):
             Qt.TransformationMode.FastTransformation
         )
         self.image_label.setPixmap(scaled_pixmap)
+
+        self.setMinimumSize(scaled_pixmap.width(), scaled_pixmap.height())
