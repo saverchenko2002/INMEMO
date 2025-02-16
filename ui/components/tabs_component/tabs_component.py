@@ -29,16 +29,24 @@ class TabsComponent(QWidget):
 
     def react_state_update(self, key, value):
 
-        updated_tabs = self.compare_tab_images(value)
-        self.model.tab_images_map = value
+        if key == AppStateConstants.PRIMARY_TAB.value:
+            print('ресет праймал табы бразер')
+            print(value)
+            self.set_active_tab_by_name(value)
+        elif key == AppStateConstants.TAB_IMAGES_MAP.value:
+            print('ресет контента таб поймал бразер')
+            updated_tabs = self.compare_tab_images(value)
+            self.model.tab_images_map = value
 
-        for directory, images in updated_tabs.items():
-            tab_name = os.path.basename(directory)
+            for directory, images in updated_tabs.items():
+                tab_name = os.path.basename(directory)
 
-            if tab_name not in self.get_existing_tabs():
-                self.add_tab(tab_name, images)
-            else:
-                self.update_tab_images(tab_name, images)
+                if tab_name not in self.get_existing_tabs():
+                    self.add_tab(tab_name, images)
+                else:
+                    self.update_tab_images(tab_name, images)
+
+
 
     def add_tab(self, name, images):
         tab = QWidget()
@@ -84,4 +92,9 @@ class TabsComponent(QWidget):
         print('IMAGE_PATH', image_path)
         return ChangePrimaryImageCommand(**{AppStateConstants.PRIMARY_IMAGE_PATH.value: image_path})
 
-
+    def set_active_tab_by_name(self, name):
+        name = os.path.basename(name)
+        for i in range(self.tab_widget.count()):
+            if self.tab_widget.tabText(i) == name:
+                self.tab_widget.setCurrentIndex(i)
+                break

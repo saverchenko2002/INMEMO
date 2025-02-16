@@ -1,8 +1,9 @@
 import numpy as np
 from sklearn.cluster import KMeans
 from processing.image.utils import read_grayscale
-import matplotlib.pyplot as plt
 import os
+from processing.image.utils import save_image
+
 
 #не должно тут сейвов быть думаю)))
 def kmeans_method(image_path, clustering_directory, k_number):
@@ -28,12 +29,12 @@ def kmeans_method(image_path, clustering_directory, k_number):
     for color in unique_colors:
         mask = (segmented_image == color).astype(np.uint8) * 255
         file_name = os.path.join(clustering_directory, f'cluster_{color}.png')
-        plt.imsave(file_name, mask)
+        file_name = save_image(file_name, mask, unique_filename=True)
         clustering_image_paths.add(file_name)
 
     segmented_file_name = os.path.join(clustering_directory, 'segmented.png')
 
-    plt.imsave(segmented_file_name, segmented_image)
+    segmented_file_name = save_image(segmented_file_name, segmented_image, unique_filename=True)
 
     clustering_image_paths.add(segmented_file_name)
 

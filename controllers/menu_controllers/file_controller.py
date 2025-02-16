@@ -41,6 +41,8 @@ class FileController(Controller):
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_images_map)
 
+        AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, import_directory)
+
     def handle_new_project(self, command):
 
         print(f"Обработка команды {command.__class__.__name__}")

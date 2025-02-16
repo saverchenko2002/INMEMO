@@ -25,8 +25,8 @@ def copy_image(source_path, destination_folder):
     source_path = Path(source_path)
     destination_folder = Path(destination_folder)
     destination_path = destination_folder / source_path.name
-    shutil.copy(source_path, destination_path)
-    return str(destination_path)
+    return str(destination_path) if destination_path.exists() else str(shutil.copy(source_path, destination_path))
+
 
 
 def update_tab_images_map(import_directory, image_file_path, tab_images_map):

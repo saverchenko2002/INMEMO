@@ -6,6 +6,7 @@ class AppStateConstants(Enum):
     IMPORT_DIRECTORY = 'import_directory'
 
     TAB_IMAGES_MAP = 'tab_images_map'
+    PRIMARY_TAB = 'primary_tab'
     PRIMARY_IMAGE_PATH = 'primary_image_path'
 
     APP_STATUS = 'app_status'

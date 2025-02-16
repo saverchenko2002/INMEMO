@@ -25,6 +25,5 @@ def update_tab_images_map(import_directory, image_file_paths, tab_images_map):
     updated_map = copy.deepcopy(tab_images_map)
 
     updated_map.setdefault(import_directory, set()).update(image_file_paths)
-
     return updated_map
 
