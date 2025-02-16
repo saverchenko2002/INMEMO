@@ -12,6 +12,7 @@ from config.constants import AppStateConstants
 
 import os
 
+
 @state_model_subscribe
 class TabsComponent(QWidget):
     def __init__(self):

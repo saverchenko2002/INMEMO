@@ -1,12 +1,12 @@
 from core.controller_registry import ControllerRegistry
 
-from menu.command_classes.file_command import FileCommand
+from menu.commands.command_classes.file_command import FileCommand
 from controllers.menu_controllers.file_controller import FileController
 
-from menu.command_classes.edit_command import EditCommand
+from menu.commands.command_classes.edit_command import EditCommand
 from controllers.menu_controllers.edit_controller import EditController
 
-from menu.command_classes.filters_command import FiltersCommand
+from menu.commands.command_classes.filters_command import FiltersCommand
 from controllers.menu_controllers.filters_controller import FiltersController
 
 from ui.command_classes.tabs_component_command import TabsComponentCommand

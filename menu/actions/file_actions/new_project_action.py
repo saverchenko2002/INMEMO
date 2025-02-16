@@ -1,6 +1,6 @@
-from menu.actions.base_action import BaseAction
+from menu.base.base_action import BaseAction
 
-from menu.file_commands.new_project_command import NewProjectCommand
+from menu.commands.file_commands.new_project_command import NewProjectCommand
 
 class NewProjectAction(BaseAction):
     def __init__(self, parent):

@@ -3,8 +3,8 @@ from config.constants import AppStateConstants
 
 from core.base.controller import Controller
 
-from menu.file_commands.new_project_command import NewProjectCommand
-from menu.file_commands.import_image_command import ImportImageCommand
+from menu.commands.file_commands.new_project_command import NewProjectCommand
+from menu.commands.file_commands.import_image_command import ImportImageCommand
 
 from utils.decorators.app_status_decorator import with_app_status_change
 

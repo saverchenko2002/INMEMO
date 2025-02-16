@@ -1,4 +1,4 @@
-from menu.options.base_option import BaseOption
+from menu.base.base_option import BaseOption
 
 
 class EditOption(BaseOption):

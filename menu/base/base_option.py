@@ -1,5 +1,5 @@
-from PyQt6.QtWidgets import QMenu, QMenuBar
-from menu.actions.base_action import BaseAction
+from PyQt6.QtWidgets import QMenu
+from menu.base.base_action import BaseAction
 
 
 class BaseOption(QMenu):

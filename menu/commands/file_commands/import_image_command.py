@@ -1,11 +1,11 @@
 from core.base.command import Command
-from menu.command_classes.filters_command import FiltersCommand
+from menu.commands.command_classes.file_command import FileCommand
 
 
-class InitClusteringCommand(Command, FiltersCommand):
+class ImportImageCommand(Command, FileCommand):
     def __init__(self):
         super().__init__()
-        print('init class InitClusteringCommand')
+        print('init class ImportImageCommand')
         self.notify_observers()
         pass
 

@@ -1,6 +1,6 @@
-from menu.actions.base_action import BaseAction
+from menu.base.base_action import BaseAction
 
-from menu.filters_commands.init_clustering_command import InitClusteringCommand
+from menu.commands.filters_commands.init_clustering_command import InitClusteringCommand
 
 
 class InitClusteringAction(BaseAction):

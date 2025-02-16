@@ -1,5 +1,5 @@
 from core.base.command import Command
-from menu.command_classes.file_command import FileCommand
+from menu.commands.command_classes.file_command import FileCommand
 
 
 class NewProjectCommand(Command, FileCommand):

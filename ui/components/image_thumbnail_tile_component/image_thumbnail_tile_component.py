@@ -5,7 +5,6 @@ from PyQt6.QtGui import QPixmap
 from PyQt6.QtCore import Qt, pyqtSignal
 
 from models.image_thumbnail_tile_component_model import ImageThumbnailTileComponentModel
-from menu.file_commands.import_image_command import ImportImageCommand
 
 
 class ImageThumbnailTileComponent(QWidget):

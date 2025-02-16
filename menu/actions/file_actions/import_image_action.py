@@ -1,6 +1,6 @@
-from menu.actions.base_action import BaseAction
+from menu.base.base_action import BaseAction
 
-from menu.file_commands.import_image_command import ImportImageCommand
+from menu.commands.file_commands.import_image_command import ImportImageCommand
 
 
 class ImportImageAction(BaseAction):

@@ -1,10 +1,10 @@
 import numpy as np
 from sklearn.cluster import KMeans
-from image_processing.utils import read_grayscale
+from processing.image.utils import read_grayscale
 import matplotlib.pyplot as plt
 import os
 
-
+#не должно тут сейвов быть думаю)))
 def kmeans_method(image_path, clustering_directory, k_number):
 
     clustering_image_paths = set()
