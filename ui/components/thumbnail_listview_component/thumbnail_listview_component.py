@@ -1,5 +1,6 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QScrollArea
+from PyQt6.QtCore import pyqtSignal, Qt
+
 
 from models.thumbnail_listview_component_model import ThumbnailListviewComponentModel
 
@@ -14,21 +15,40 @@ class ThumbnailListviewComponent(QWidget):
         super().__init__()
 
         self.model = ThumbnailListviewComponentModel(images)
+
+        self.scroll_area = QScrollArea(self)
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setStyleSheet("QScrollArea { border: 0px; }")
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+
+        # Создаем QWidget, который будет контейнером для всех элементов
+        self.list_widget = QWidget()
+        self.list_layout = QVBoxLayout(self.list_widget)
+        self.list_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        # Устанавливаем list_widget как содержимое для scroll_area
+        self.scroll_area.setWidget(self.list_widget)
+
+        # Основной layout для ThumbnailListviewComponent
         self.layout = QVBoxLayout()
+        self.layout.addWidget(self.scroll_area)
         self.setLayout(self.layout)
 
         self.create_listview()
 
     def create_listview(self):
+        # Добавляем элементы в layout прокручиваемой области
         for image_path in self.model.images:
             self.add_tile(image_path)
 
     def add_tile(self, image_path):
         thumbnail = ImageThumbnailTileComponent(image_path)
         thumbnail.clicked.connect(self.on_tile_clicked)
-        self.layout.addWidget(thumbnail)
+        self.list_layout.addWidget(thumbnail)
 
     def update_listview(self, images):
+        # Обновляем модель изображений и добавляем новые элементы
         self.model.images = self.model.images.union(images)
 
         for image_path in images:

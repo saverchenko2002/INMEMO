@@ -13,7 +13,7 @@ def kmeans_method(image_path, clustering_directory, k_number):
 
     pixels = image.reshape((-1, 1))
 
-    kmeans = KMeans(n_clusters=k_number, random_state=42)
+    kmeans = KMeans(n_clusters=k_number, init='k-means++', max_iter=300, n_init=10)
 
     kmeans.fit(pixels)
 
