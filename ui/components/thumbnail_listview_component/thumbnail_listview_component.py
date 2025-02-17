@@ -44,7 +44,7 @@ class ThumbnailListviewComponent(QWidget):
         self.list_layout.addWidget(thumbnail)
 
     def update_listview(self, images):
-        self.model.images = self.model.images.union(images)
+        self.model.images.extend(images)
 
         for image_path in images:
             self.add_tile(image_path)

@@ -3,6 +3,8 @@ import os
 import shutil
 from pathlib import Path
 
+from processing.image.utils import get_unique_filename
+
 from PyQt6.QtWidgets import QFileDialog
 
 
@@ -25,12 +27,32 @@ def copy_image(source_path, destination_folder):
     source_path = Path(source_path)
     destination_folder = Path(destination_folder)
     destination_path = destination_folder / source_path.name
-    return str(destination_path) if destination_path.exists() else str(shutil.copy(source_path, destination_path))
+    destination_path = get_unique_filename(os.path.dirname(destination_path), destination_path) \
+        if destination_path.exists() \
+        else destination_path
+    return str(shutil.copy(source_path, destination_path))
 
 
+def add_image_to_tab_map(directory_path, image_file_path, tab_images_map):
+    """
+    Updates the tab images map by adding a new image file to the corresponding directory.
 
-def update_tab_images_map(import_directory, image_file_path, tab_images_map):
-    updated_map = copy.deepcopy(tab_images_map)
-    updated_map.setdefault(import_directory, set()).add(image_file_path)
+    :param directory_path: The path to the directory containing images for a tab.
+    :type directory_path: str
+    :param image_file_path: The path to the image file being added.
+    :type image_file_path: str
+    :param tab_images_map: A dictionary where each key is a directory path,
+        and the value is a list of image file paths stored in that directory.
+    :type tab_images_map: dict[str, list[str]]
+    :return: A new copy of `tab_images_map` with the added image file.
+    :rtype: dict[str, list[str]]
+    """
+    updated_tab_images_map = copy.deepcopy(tab_images_map)
 
-    return updated_map
+    if directory_path not in updated_tab_images_map:
+        updated_tab_images_map[directory_path] = []
+
+    if image_file_path not in updated_tab_images_map[directory_path]:
+        updated_tab_images_map[directory_path].append(image_file_path)
+
+    return updated_tab_images_map

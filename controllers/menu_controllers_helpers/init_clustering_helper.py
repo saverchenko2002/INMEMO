@@ -21,9 +21,16 @@ def create_clustering_directory(project_directory, image_path):
     return clustering_directory
 
 
-def update_tab_images_map(import_directory, image_file_paths, tab_images_map):
-    updated_map = copy.deepcopy(tab_images_map)
-
-    updated_map.setdefault(import_directory, set()).update(image_file_paths)
-    return updated_map
-
+def add_images_to_tab_map(directory_path, image_file_paths, tab_images_map):
+    """
+    :param directory_path:
+    :type directory_path: str
+    :param image_file_paths:
+    :type image_file_paths: list[str]
+    :param tab_images_map:
+    :type tab_images_map: dict[str, list[str]]
+    :rtype: dict[str, list[str]]
+    """
+    updated_tab_images_map = copy.deepcopy(tab_images_map)
+    updated_tab_images_map.setdefault(directory_path, []).extend(image_file_paths)
+    return updated_tab_images_map

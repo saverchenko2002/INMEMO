@@ -112,7 +112,7 @@ class TabsComponent(QWidget):
             if directory in self.model.tab_images_map:
                 existing_images = self.model.tab_images_map[directory]
 
-                added_images = images - existing_images
+                added_images = [image for image in images if image not in existing_images]
 
                 if added_images:
                     updated_tabs[directory] = added_images

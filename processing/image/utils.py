@@ -8,11 +8,9 @@ def read_grayscale(image_path):
 
 
 def save_image(image_path, image_data, unique_filename=False):
-    print('IMAGE PATH', image_path)
     filename = image_path
     if unique_filename:
         filename = get_unique_filename(os.path.dirname(image_path), image_path)
-    print('FILENAME UNIQUE PUTIN', filename)
     plt.imsave(filename, image_data)
     return filename
 
