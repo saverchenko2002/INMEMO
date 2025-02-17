@@ -1,4 +1,5 @@
 import os
+import json
 
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent
 from PyQt6.QtWidgets import QWidget, QLabel, QHBoxLayout, QVBoxLayout
@@ -6,6 +7,9 @@ from PyQt6.QtGui import QPixmap, QPainter, QDrag
 from PyQt6.QtCore import Qt, QMimeData, pyqtSignal
 
 from models.image_thumbnail_tile_component_model import ImageThumbnailTileComponentModel
+
+from ui.config.constants import DragDropConstants
+
 
 
 class ImageThumbnailTileComponent(QWidget):
@@ -42,57 +46,81 @@ class ImageThumbnailTileComponent(QWidget):
                 Qt.TransformationMode.SmoothTransformation
             ))
 
+    def _get_pixmap_for_drag(self):
+        pixmap = QPixmap(self.size())
+        pixmap.fill(Qt.GlobalColor.transparent)
+        painter = QPainter(pixmap)
+        painter.setOpacity(0.5)
+        self.render(painter)
+        painter.end()
+
+        scaled_pixmap = pixmap.scaled(
+            pixmap.width() // 1.3,
+            pixmap.height() // 1.3,
+            Qt.AspectRatioMode.KeepAspectRatio,
+            Qt.TransformationMode.SmoothTransformation
+        )
+
+        return scaled_pixmap
+
+    def _construct_mime(self):
+        data = {
+            DragDropConstants.IMAGE_PATH.value: self.model.image_path,
+            DragDropConstants.TAB_DIRECTORY.value: os.path.dirname(self.model.image_path)
+        }
+
+        serialized_data = json.dumps(data)
+
+        mime_data = QMimeData()
+        mime_data.setText(serialized_data)
+
+        return mime_data
+
+    def _deconstruct_mime(self, data):
+        return json.loads(data)
+
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
 
-        # Ваш код, который обрабатывает клик
-        print('ПОЛЕТЕЛ', self.model.image_path)
         self.clicked.emit(self.model.image_path)
 
-        # Скрываем текущий виджет перед началом перетаскивания
         self.setVisible(False)
 
-        # Создаем MIME-данные для перетаскивания
-        mime_data = QMimeData()
-        mime_data.setText(self.model.image_path)  # Передаем путь изображения
-
-        # Настроим drag объект
-
-        pixmap = QPixmap(self.size())
-        pixmap.fill(Qt.GlobalColor.transparent)  # Заливаем прозрачным фоном
-
-        # Создаем QPainter и рисуем в pixmap с учетом прозрачности
-        painter = QPainter(pixmap)
-        painter.setOpacity(0.5)  # Устанавливаем уровень прозрачности (0.0 - полностью прозрачный, 1.0 - непрозрачный)
-        self.render(painter)  # Рендерим содержимое виджета в pixmap
-        painter.end()
-
-        scaled_pixmap = pixmap.scaled(pixmap.width() // 1.3, pixmap.height() // 1.3,
-                                      Qt.AspectRatioMode.KeepAspectRatio,
-                                      Qt.TransformationMode.SmoothTransformation)
-
-        # Настроим drag объект
         drag = QDrag(self)
-        drag.setMimeData(mime_data)
-        drag.setPixmap(scaled_pixmap)
+        drag.setMimeData(self._construct_mime())
+        drag.setPixmap(self._get_pixmap_for_drag())
         drag.setHotSpot(event.pos())
 
         # Начинаем перетаскивание
         result = drag.exec(Qt.DropAction.MoveAction)
-
-        # Если перетаскивание завершилось перемещением (или отменой), показываем исходный объект
-        if result != Qt.DropAction.MoveAction:
-            self.setVisible(True)  # Показываем исходный объект снова
+        if result == Qt.DropAction.IgnoreAction:
+            self.setVisible(True)
+        # # Если перетаскивание завершилось перемещением (или отменой), показываем исходный объект
+        # if result != Qt.DropAction.MoveAction:
+        #     self.setVisible(True)  # Показываем исходный объект снова
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         print('dragEnterEvent йооооу')
         event.acceptProposedAction()
 
     def dragMoveEvent(self, event):
-        print('dragMoveEvent йооооу')
+        print('tile react')
+        print(event.position().toPoint())
         event.accept()
 
     def dropEvent(self, event: QDropEvent):
-        print("Dropped on component:", self.model.image_path)
+        print("tile fire Dropped on component:", self.model.image_path)
+        if event.mimeData().hasText():
+
+            data = self._deconstruct_mime(event.mimeData().text())
+            print(data)
+            print(os.path.basename(self.model.image_path))
+            if data[DragDropConstants.TAB_DIRECTORY.value] == os.path.dirname(self.model.image_path):
+                print('шлюха мы в одной табе')
+                event.acceptProposedAction()
+            elif data[DragDropConstants.TAB_DIRECTORY.value] != os.path.dirname(self.model.image_path):
+                print('шлюха мы в разных табах')
+
+                event.ignore()
+
         # Handle the drop here, e.g., initiate some action between the two components
-        event.acceptProposedAction()

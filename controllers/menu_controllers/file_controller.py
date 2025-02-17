@@ -76,15 +76,16 @@ class FileController(Controller):
                 for file in os.listdir(dir_)
                 if file.lower().endswith(('.png', '.jpg', '.jpeg'))
             ]
-            if images:
-                tab_images_map[dir_] = images
+            tab_images_map[dir_] = images
 
         if not tab_images_map:
             print("Ошибка: В проекте нет изображений")
             return
 
-        primary_tab = subdirs[0]
-        primary_image = tab_images_map.get(primary_tab)[0]
+        primary_tab, primary_image = next(
+            ((dir_, images[0]) for dir_, images in tab_images_map.items() if images),
+            (None, None)
+        )
 
         AppStateService().set_state(AppStateConstants.PROJECT_DIRECTORY.value, project_directory)
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, {})

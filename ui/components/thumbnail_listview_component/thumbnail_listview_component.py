@@ -13,7 +13,6 @@ class ThumbnailListviewComponent(QWidget):
 
     def __init__(self, images):
         super().__init__()
-
         self.model = ThumbnailListviewComponentModel(images)
 
         self.scroll_area = QScrollArea(self)
@@ -42,6 +41,16 @@ class ThumbnailListviewComponent(QWidget):
         thumbnail = ImageThumbnailTileComponent(image_path)
         thumbnail.clicked.connect(self.on_tile_clicked)
         self.list_layout.addWidget(thumbnail)
+
+    def remove_tile(self, image_path):
+        for i in range(self.list_layout.count()):
+            widget = self.list_layout.itemAt(i).widget()
+            if widget.model.image_path == image_path:
+                self.list_layout.removeWidget(widget)
+                widget.deleteLater()  # Удаляем виджет
+                break
+
+        self.model.images = [img for img in self.model.images if img != image_path]
 
     def update_listview(self, images):
         self.model.images.extend(images)
