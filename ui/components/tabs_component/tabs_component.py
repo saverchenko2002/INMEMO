@@ -9,7 +9,7 @@ from ui.components.thumbnail_listview_component.thumbnail_listview_component imp
 from ui.components.tabs_component.tabs_component_commands.change_primary_image_command import ChangePrimaryImageCommand
 
 from config.constants import AppStateConstants
-
+from core.app_state_service import AppStateService
 import os
 
 
@@ -24,6 +24,8 @@ class TabsComponent(QWidget):
         self.tab_widget = QTabWidget()
         self.layout.addWidget(self.tab_widget)
         self.setLayout(self.layout)
+
+        self.setAcceptDrops(True)
 
         self.setStyleSheet("border: 1px solid red;")
 
@@ -46,6 +48,41 @@ class TabsComponent(QWidget):
                 else:
                     self.update_tab_images(tab_name, images)
 
+
+    def dragEnterEvent(self, event):
+        # Проверяем, что перетаскивается изображение
+        if event.mimeData().hasText():
+            event.acceptProposedAction()
+
+    def dragMoveEvent(self, event):
+        # Проверяем, на какую вкладку наводится курсор
+        tab_bar = self.tab_widget.tabBar()
+        tab_index = tab_bar.tabAt(event.position().toPoint())  # Получаем индекс вкладки, на которую наведен курсор
+
+        if tab_index != -1:  # Если курсор над вкладкой
+            # Переключаем на вкладку
+            self.tab_widget.setCurrentIndex(tab_index)
+        event.accept()
+
+    def dropEvent(self, event):
+        print('АЛЁЁЁ БЛЯ')
+        print("Dropped on component:", self)
+        image_path = event.mimeData().text()
+        print(f"Dropped image path: {image_path}")
+        print(event.position())
+        target_tab_index = self.tab_widget.tabBar().tabAt(event.position().toPoint())
+        print(target_tab_index)
+        print('АЛЁЁЁ БЛЯ')
+        current_tab_name = self.tab_widget.tabText(target_tab_index)
+        # Получаем название вкладки
+
+        # Логика для добавления элемента в вкладку
+        print(f"Moving image to tab: {current_tab_name}")
+        # self.add_image_to_tab(image_path, current_tab_name)
+
+        event.acceptProposedAction()
+
+        #возможно надо генерить команду на смену стейта
 
 
     def add_tab(self, name, images):

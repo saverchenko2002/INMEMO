@@ -175,6 +175,8 @@ class FiltersController(Controller):
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, image_path)
         AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, morphology_directory)
 
+        print('morphology_directory', morphology_directory)
+
         pass
 
 
