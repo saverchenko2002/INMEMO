@@ -15,6 +15,9 @@ from controllers.component_controllers.tabs_component_controller import TabsComp
 from ui.command_classes.image_thumbnail_tile_component_command import ImageThumbnailTileComponentCommand
 from controllers.component_controllers.image_thumbnail_tile_component_controller import ImageThumbnailTileComponentController
 
+from menu.commands.command_classes.contours_command import ContoursCommand
+from controllers.menu_controllers.contours_controller import ContoursController
+
 from core.app_state_service import AppStateService
 
 
@@ -22,6 +25,7 @@ def register_controllers():
     ControllerRegistry.register(FileCommand, FileController())
     ControllerRegistry.register(EditCommand, EditController())
     ControllerRegistry.register(FiltersCommand, FiltersController())
+    ControllerRegistry.register(ContoursCommand, ContoursController())
 
     ControllerRegistry.register(ImageThumbnailTileComponentCommand, ImageThumbnailTileComponentController())
     ControllerRegistry.register(TabsComponentCommand, TabsComponentController())

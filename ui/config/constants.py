@@ -1,5 +1,7 @@
 from enum import Enum
 
+import cv2
+
 
 class DragDropConstants(Enum):
     TAB_DIRECTORY = 'tab_dir'
@@ -18,4 +20,24 @@ class OperationConstants(Enum):
     SOURCE_OPERAND = 'source_operand'
     TARGET_OPERAND = 'target_operand'
     IMAGE_PATH = 'image_path'
+
+class ContoursWindow(Enum):
+    WINDOW_HEADER = 'Параметры поиска контуров'
+
+class ContoursChainMethods(Enum):
+    CHAIN_APPROX_SIMPLE = cv2.CHAIN_APPROX_SIMPLE
+    CHAIN_APPROX_NONE = cv2.CHAIN_APPROX_NONE
+    CHAIN_APPROX_TC89_L1 = cv2.CHAIN_APPROX_TC89_L1
+    CHAIN_APPROX_TC89_KCOS = cv2.CHAIN_APPROX_TC89_KCOS
+
+
+class ContoursRetrieveOptions(Enum):
+    RETR_EXTERNAL = cv2.RETR_EXTERNAL
+    RETR_LIST = cv2.RETR_LIST
+    RETR_TREE = cv2.RETR_TREE
+    RETR_CCOMP = cv2.RETR_CCOMP
+    RETR_FLOODFILL = cv2.RETR_FLOODFILL
+
+
+
 # class TilesInteractionConstants(Enum)

@@ -2,6 +2,7 @@ from PyQt6.QtWidgets import QMenuBar
 from menu.options.file_option import FileOption
 from menu.options.edit_option import EditOption
 from menu.options.filters_option import FiltersOption
+from menu.options.contours_option import ContoursOption
 
 
 class MenuBar(QMenuBar):
@@ -11,3 +12,4 @@ class MenuBar(QMenuBar):
         self.addMenu(FileOption(self))
         self.addMenu(EditOption(self))
         self.addMenu(FiltersOption(self))
+        self.addMenu(ContoursOption(self))

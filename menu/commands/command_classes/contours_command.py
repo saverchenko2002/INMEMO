@@ -1,0 +1,2 @@
+class ContoursCommand:
+    pass
