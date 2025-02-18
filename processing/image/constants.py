@@ -12,3 +12,7 @@ class MorphologicalConstants(Enum):
     MORPH_GRADIENT = cv2.MORPH_GRADIENT
     MORPH_TOPHAT = cv2.MORPH_TOPHAT
     MORPH_BLACKHAT = cv2.MORPH_BLACKHAT
+
+
+class ThresholdConstants(Enum):
+    THRESH_BINARY = cv2.THRESH_BINARY

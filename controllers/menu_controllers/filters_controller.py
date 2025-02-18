@@ -13,6 +13,7 @@ from menu.commands.filters_commands.init_dilation_command import InitDilationCom
 from menu.commands.filters_commands.init_erosion_command import InitErosionCommand
 from menu.commands.filters_commands.init_morphology_command import InitMorphologyCommand
 from menu.commands.filters_commands.init_rembg_command import InitRembgCommand
+from menu.commands.filters_commands.init_threshold_command import InitThresholdCommand
 
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.log_comand_execution_decorator import log_command_execution
@@ -37,6 +38,8 @@ from processing.image.methods.morphology import (dilation_method,
                                                  erosion_method,
                                                  morphology_method)
 
+from controllers.menu_controllers_helpers.init_threshold_helper import perform_threshold
+
 
 class FiltersController(Controller):
     def __init__(self):
@@ -47,6 +50,28 @@ class FiltersController(Controller):
         self.add_handler(InitErosionCommand, self.handle_init_erosion)
         self.add_handler(InitMorphologyCommand, self.handle_init_morphology)
         self.add_handler(InitRembgCommand, self.handle_init_rembg)
+        self.add_handler(InitThresholdCommand, self.handle_init_threshold)
+
+    @with_app_status_change
+    @log_command_execution
+    def handle_init_threshold(self, command):
+
+        primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
+
+        threshold_type = command.__dict__.get(MenuCommandsConstants.THRESHOLD_COMMAND_PAYLOAD.name)
+
+        logging.info(threshold_type)
+
+        new_filename_path, image_data = perform_threshold(primary_image_path, threshold_type)
+
+        filename = save_image(new_filename_path, image_data, True)
+
+        tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
+
+        updated_tab_images_map = add_images_to_tab_map(os.path.dirname(filename), [filename], tab_images_map)
+
+        AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
+        AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
 
     @with_app_status_change
     @log_command_execution

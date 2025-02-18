@@ -11,7 +11,7 @@ def save_image(image_path, image_data, unique_filename=False):
     filename = image_path
     if unique_filename:
         filename = get_unique_filename(os.path.dirname(image_path), image_path)
-    plt.imsave(filename, image_data)
+    cv2.imwrite(filename, image_data)
     return filename
 
 
