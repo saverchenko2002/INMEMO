@@ -16,3 +16,10 @@ class MorphologicalConstants(Enum):
 
 class ThresholdConstants(Enum):
     THRESH_BINARY = cv2.THRESH_BINARY
+
+
+class InterpolationConstants(Enum):
+    INTER_NEAREST = cv2.INTER_NEAREST
+    INTER_LINEAR = cv2.INTER_LINEAR
+    INTER_CUBIC = cv2.INTER_CUBIC
+    INTER_LANCZOS = cv2.INTER_LANCZOS4

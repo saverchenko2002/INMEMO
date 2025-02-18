@@ -14,6 +14,8 @@ from menu.commands.filters_commands.init_erosion_command import InitErosionComma
 from menu.commands.filters_commands.init_morphology_command import InitMorphologyCommand
 from menu.commands.filters_commands.init_rembg_command import InitRembgCommand
 from menu.commands.filters_commands.init_threshold_command import InitThresholdCommand
+from menu.commands.filters_commands.init_interpolation_command import InitInterpolationCommand
+from menu.commands.filters_commands.init_invert_mask_command import InitInvertMaskCommand
 
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.log_comand_execution_decorator import log_command_execution
@@ -39,7 +41,8 @@ from processing.image.methods.morphology import (dilation_method,
                                                  morphology_method)
 
 from controllers.menu_controllers_helpers.init_threshold_helper import perform_threshold
-
+from controllers.menu_controllers_helpers.init_interpolation_helper import perform_interpolation, get_image_size
+from controllers.menu_controllers_helpers.init_invert_mask_helper import perform_invert_mask
 
 class FiltersController(Controller):
     def __init__(self):
@@ -51,6 +54,43 @@ class FiltersController(Controller):
         self.add_handler(InitMorphologyCommand, self.handle_init_morphology)
         self.add_handler(InitRembgCommand, self.handle_init_rembg)
         self.add_handler(InitThresholdCommand, self.handle_init_threshold)
+        self.add_handler(InitInterpolationCommand, self.handle_init_interpolation)
+        self.add_handler(InitInvertMaskCommand, self.handle_init_invert_mask)
+
+    @with_app_status_change
+    @log_command_execution
+    def handle_init_invert_mask(self, command):
+        primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
+
+        image_file_path, image_data = perform_invert_mask(primary_image_path)
+
+        filename = save_image(image_file_path, image_data)
+
+        tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
+
+        AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, tab_images_map)
+        AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
+
+    @with_app_status_change
+    @log_command_execution
+    def handle_init_interpolation(self, command):
+        primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
+        interpolation_type = command.__dict__.get(MenuCommandsConstants.INTERPOLATION_COMMAND_PAYLOAD.name)
+
+        logging.info(interpolation_type)
+
+        image_size = get_image_size()
+
+        new_filename_path, image_data = perform_interpolation(primary_image_path, image_size, interpolation_type)
+
+        filename = save_image(new_filename_path, image_data, True)
+
+        tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
+
+        updated_tab_images_map = add_images_to_tab_map(os.path.dirname(filename), [filename], tab_images_map)
+
+        AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
+        AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
 
     @with_app_status_change
     @log_command_execution
