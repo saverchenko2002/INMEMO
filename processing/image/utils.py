@@ -24,4 +24,4 @@ def get_unique_filename(directory, filename):
         new_filename = f"{name}_{counter}{ext}"
         counter += 1
 
-    return new_filename
+    return os.path.normpath(new_filename)

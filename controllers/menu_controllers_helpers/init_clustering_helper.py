@@ -18,7 +18,7 @@ def create_clustering_directory(project_directory, image_path):
     clustering_directory = os.path.join(project_directory, f'{file_name}_Clustering')
     if not os.path.exists(clustering_directory):
         os.makedirs(clustering_directory)
-    return clustering_directory
+    return os.path.normpath(clustering_directory)
 
 
 def add_images_to_tab_map(directory_path, image_file_paths, tab_images_map):

@@ -13,14 +13,14 @@ def get_image_path():
     image_path, _ = QFileDialog.getOpenFileName(None, "Выберите изображение", "",
                                           "Image Files (*.png *.jpg *.bmp);;All Files (*)", options=options)
 
-    return image_path
+    return os.path.normpath(image_path)
 
 
 def get_import_directory(project_directory):
     import_directory = os.path.join(project_directory, 'Import')
     if not os.path.exists(import_directory):
         os.makedirs(import_directory)
-    return import_directory
+    return os.path.normpath(import_directory)
 
 
 def copy_image(source_path, destination_folder):
@@ -30,7 +30,7 @@ def copy_image(source_path, destination_folder):
     destination_path = get_unique_filename(os.path.dirname(destination_path), destination_path) \
         if destination_path.exists() \
         else destination_path
-    return str(shutil.copy(source_path, destination_path))
+    return os.path.normpath(shutil.copy(source_path, destination_path))
 
 
 def add_image_to_tab_map(directory_path, image_file_path, tab_images_map):

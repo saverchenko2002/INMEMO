@@ -71,6 +71,8 @@ class TabsComponent(QWidget):
         if event.mimeData().hasText():
             data = json.loads(event.mimeData().text())
             image_path = data[DragDropConstants.IMAGE_PATH.value]
+            print('СУКА нА РАСПАКОВКЕ ', image_path)
+
             source_dir_name = data[DragDropConstants.TAB_DIRECTORY.value]
             print(source_dir_name)
             if os.path.basename(source_dir_name) == active_tab_name:

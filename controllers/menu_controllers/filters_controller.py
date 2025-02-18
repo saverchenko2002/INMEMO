@@ -87,8 +87,8 @@ class FiltersController(Controller):
 
         copied_image = copy_image(primary_image_path, morphology_directory)
 
-        image_paths.append(image_path)
         image_paths.append(copied_image)
+        image_paths.append(image_path)
 
         updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_paths, tab_images_map)
 
@@ -125,8 +125,8 @@ class FiltersController(Controller):
 
         copied_image = copy_image(primary_image_path, morphology_directory)
 
-        image_paths.append(image_path)
         image_paths.append(copied_image)
+        image_paths.append(image_path)
 
         updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_paths, tab_images_map)
 
@@ -164,8 +164,8 @@ class FiltersController(Controller):
 
         copied_image = copy_image(primary_image_path, morphology_directory)
 
-        image_paths.append(image_path)
         image_paths.append(copied_image)
+        image_paths.append(image_path)
 
         updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_paths, tab_images_map)
 

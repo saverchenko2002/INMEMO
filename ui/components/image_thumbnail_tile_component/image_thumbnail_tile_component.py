@@ -64,6 +64,7 @@ class ImageThumbnailTileComponent(QWidget):
         return scaled_pixmap
 
     def _construct_mime(self):
+        print('СУКА ДО КОНСТРУКТА ', self.model.image_path)
         data = {
             DragDropConstants.IMAGE_PATH.value: self.model.image_path,
             DragDropConstants.TAB_DIRECTORY.value: os.path.dirname(self.model.image_path)
