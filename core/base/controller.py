@@ -7,7 +7,7 @@ class Controller(ABC):
 
     def execute(self, command):
         handler = self.handlers.get(command.__class__)
-        print('и хендлер достал по классу команды епт')
+        print('достал хендлер по классу команды')
         if handler:
             handler(command)
         else:

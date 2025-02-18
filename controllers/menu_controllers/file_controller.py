@@ -37,7 +37,6 @@ class FileController(Controller):
         image_file_path = get_image_path()
         import_directory = get_import_directory(project_directory)
         image_file_path = copy_image(image_file_path, import_directory)
-        print('ТО ЧТО МНЕ ИМПОРТИРУЮТ НАХУЙ', image_file_path)
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
         updated_images_map = add_image_to_tab_map(import_directory, image_file_path, tab_images_map)
@@ -87,7 +86,6 @@ class FileController(Controller):
             (None, None)
         )
 
-        print(primary_tab, 'ПРИМЕР КАРТИНКИ НА ИМПОРТЕ С ИНИТ ПРОЕКТА')
 
         AppStateService().set_state(AppStateConstants.PROJECT_DIRECTORY.value, project_directory)
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, {})

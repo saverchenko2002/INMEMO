@@ -7,7 +7,7 @@ def get_clusters_number():
     while True:
         num, ok = QInputDialog.getInt(None, "Ввод числа", "Введите натуральное число:", min=2)
         if not ok:
-            return None  # Если нажата "Отмена"
+            return None
         if num > 0:
             return num
         QMessageBox.warning(None, "Ошибка ввода", "Введите натуральное число (1, 2, 3...)!")

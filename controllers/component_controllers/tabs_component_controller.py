@@ -35,7 +35,6 @@ class TabsComponentController(Controller):
         project_dir = AppStateService().get_state(AppStateConstants.PROJECT_DIRECTORY.value)
         target_folder_path = os.path.join(project_dir, target_folder_name)
         target_image_path = os.path.join(target_folder_path, os.path.basename(source_image_path))
-        print('handle_move_image', target_image_path)
         target_image_path = move_image(source_image_path, target_image_path)
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
         updated_tab_images_map = move_update_tab_map(source_image_path, target_image_path, tab_images_map)

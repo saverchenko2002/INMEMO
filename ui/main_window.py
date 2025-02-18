@@ -113,13 +113,10 @@ class MainWindow(QMainWindow):
 
     def close_event(self, event):
         CommandPublisher.unsubscribe(self)
-        print('amogus')
 
     @staticmethod
     def on_command_received(command):
-        print('ZZZZZZZZZZZ')
         print(command)
-        print(command is None, 'КОМАНДА НЕ НАН БЛЯТЬ')
         CommandExecutor.execute(command)
 
 

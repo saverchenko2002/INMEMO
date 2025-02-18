@@ -62,9 +62,7 @@ class FiltersController(Controller):
     def handle_init_erosion(self, command):
         print(f"Обработка команды {command.__class__.__name__}")
 
-        print(f"Обработка команды {command.__class__.__name__}")
         morphology_type = MorphologicalConstants.MORPH_EROSION.name
-        print(f"morphology_type в handle_init_erosion: {morphology_type}")
         image_paths = []
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
         project_directory = AppStateService().get_state(AppStateConstants.PROJECT_DIRECTORY.value)
@@ -101,7 +99,6 @@ class FiltersController(Controller):
     def handle_init_dilation(self, command):
         print(f"Обработка команды {command.__class__.__name__}")
         morphology_type = MorphologicalConstants.MORPH_EROSION.name
-        print(f"morphology_type в handle_dilateion_erosion: {morphology_type}")
 
         image_paths = []
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
@@ -172,9 +169,3 @@ class FiltersController(Controller):
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, image_path)
         AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, morphology_directory)
-
-        print('morphology_directory', morphology_directory)
-
-        pass
-
-

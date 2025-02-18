@@ -47,7 +47,7 @@ class ThumbnailListviewComponent(QWidget):
             widget = self.list_layout.itemAt(i).widget()
             if widget.model.image_path == image_path:
                 self.list_layout.removeWidget(widget)
-                widget.deleteLater()  # Удаляем виджет
+                widget.deleteLater()
                 break
 
         self.model.images = [img for img in self.model.images if img != image_path]

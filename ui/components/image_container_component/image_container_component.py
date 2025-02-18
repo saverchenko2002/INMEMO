@@ -23,7 +23,6 @@ class ImageContainerComponent(QWidget):
         self.setLayout(layout)
 
     def react_state_update(self, key, value):
-        print('ключ БАЛЯТЬ) ', key)
         self.model[key] = value
         self.set_image(value)
 

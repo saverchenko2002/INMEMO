@@ -30,7 +30,6 @@ class ImageThumbnailTileComponent(QWidget):
         self.name_label = QLabel(os.path.basename(image_path))
         self.name_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
 
-        # self.setScaledContents(True)
 
         self.layout.addWidget(self.thumbnail_label)
         self.layout.addWidget(self.name_label)
@@ -64,7 +63,6 @@ class ImageThumbnailTileComponent(QWidget):
         return scaled_pixmap
 
     def _construct_mime(self):
-        print('СУКА ДО КОНСТРУКТА ', self.model.image_path)
         data = {
             DragDropConstants.IMAGE_PATH.value: self.model.image_path,
             DragDropConstants.TAB_DIRECTORY.value: os.path.dirname(self.model.image_path)
@@ -92,36 +90,24 @@ class ImageThumbnailTileComponent(QWidget):
         drag.setPixmap(self._get_pixmap_for_drag())
         drag.setHotSpot(event.pos())
 
-        # Начинаем перетаскивание
         result = drag.exec(Qt.DropAction.MoveAction)
         if result == Qt.DropAction.IgnoreAction:
             self.setVisible(True)
-        # # Если перетаскивание завершилось перемещением (или отменой), показываем исходный объект
-        # if result != Qt.DropAction.MoveAction:
-        #     self.setVisible(True)  # Показываем исходный объект снова
 
     def dragEnterEvent(self, event: QDragEnterEvent):
-        print('dragEnterEvent йооооу')
         event.acceptProposedAction()
 
     def dragMoveEvent(self, event):
-        print('tile react')
-        print(event.position().toPoint())
         event.accept()
 
     def dropEvent(self, event: QDropEvent):
-        print("tile fire Dropped on component:", self.model.image_path)
         if event.mimeData().hasText():
 
             data = self._deconstruct_mime(event.mimeData().text())
             print(data)
             print(os.path.basename(self.model.image_path))
             if data[DragDropConstants.TAB_DIRECTORY.value] == os.path.dirname(self.model.image_path):
-                print('шлюха мы в одной табе')
                 event.acceptProposedAction()
             elif data[DragDropConstants.TAB_DIRECTORY.value] != os.path.dirname(self.model.image_path):
-                print('шлюха мы в разных табах')
-
                 event.ignore()
 
-        # Handle the drop here, e.g., initiate some action between the two components
