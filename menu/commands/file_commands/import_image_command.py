@@ -1,11 +1,9 @@
 from core.base.command import Command
 from menu.commands.command_classes.file_command import FileCommand
 
-
 class ImportImageCommand(Command, FileCommand):
     def __init__(self):
         super().__init__()
-        print('init class ImportImageCommand')
         self.notify_observers()
         pass
 

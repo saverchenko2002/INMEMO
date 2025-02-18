@@ -1,0 +1,2 @@
+class ImageThumbnailTileComponentCommand:
+    pass

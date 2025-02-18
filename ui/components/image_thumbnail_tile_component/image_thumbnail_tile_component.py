@@ -1,3 +1,4 @@
+import logging
 import os
 import json
 
@@ -10,6 +11,9 @@ from models.image_thumbnail_tile_component_model import ImageThumbnailTileCompon
 
 from ui.config.constants import DragDropConstants
 
+from ui.components.image_operation_dialog_component.image_operation_dialog_component import ImageOperationDialogComponent
+from ui.config.constants import OperationConstants
+from ui.components.image_thumbnail_tile_component.image_thumbnail_tile_component_commands.manipulate_images_command import ManipulateImagesCommand
 
 
 class ImageThumbnailTileComponent(QWidget):
@@ -91,8 +95,7 @@ class ImageThumbnailTileComponent(QWidget):
         drag.setHotSpot(event.pos())
 
         result = drag.exec(Qt.DropAction.MoveAction)
-        if result == Qt.DropAction.IgnoreAction:
-            self.setVisible(True)
+        self.setVisible(True)
 
     def dragEnterEvent(self, event: QDragEnterEvent):
         event.acceptProposedAction()
@@ -104,10 +107,14 @@ class ImageThumbnailTileComponent(QWidget):
         if event.mimeData().hasText():
 
             data = self._deconstruct_mime(event.mimeData().text())
-            print(data)
-            print(os.path.basename(self.model.image_path))
             if data[DragDropConstants.TAB_DIRECTORY.value] == os.path.dirname(self.model.image_path):
+                dialog = ImageOperationDialogComponent(self.model.image_path, data[DragDropConstants.IMAGE_PATH.value])
+                dialog.operation_completed.connect(self._handle_operation_result)
+                dialog.exec()
                 event.acceptProposedAction()
             elif data[DragDropConstants.TAB_DIRECTORY.value] != os.path.dirname(self.model.image_path):
                 event.ignore()
 
+    def _handle_operation_result(self, payload):
+        logging.debug(payload)
+        return ManipulateImagesCommand(**payload)

@@ -9,8 +9,6 @@ def state_model_subscribe(cls):
 
         if hasattr(self, "model"):
             for field in vars(self.model).keys():
-                print(f'подписались ежжи по полю {field}')
-                print(self)
                 AppStateService().subscribe(field, self)
 
     cls.__init__ = new_init

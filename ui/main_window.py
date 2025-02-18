@@ -116,7 +116,6 @@ class MainWindow(QMainWindow):
 
     @staticmethod
     def on_command_received(command):
-        print(command)
         CommandExecutor.execute(command)
 
 

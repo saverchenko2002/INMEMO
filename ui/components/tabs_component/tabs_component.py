@@ -66,7 +66,6 @@ class TabsComponent(QWidget):
             image_path = data[DragDropConstants.IMAGE_PATH.value]
 
             source_dir_name = data[DragDropConstants.TAB_DIRECTORY.value]
-            print(source_dir_name)
             if os.path.basename(source_dir_name) == active_tab_name:
                 event.ignore()
             elif os.path.basename(source_dir_name) != active_tab_name:
@@ -113,7 +112,6 @@ class TabsComponent(QWidget):
         return [self.tab_widget.tabText(i) for i in range(self.tab_widget.count())]
 
     def on_image_selected(self, image_path):
-        print('IMAGE_PATH', image_path)
         return ChangePrimaryImageCommand(**{AppStateConstants.PRIMARY_IMAGE_PATH.value: image_path})
 
     def set_active_tab_by_name(self, name):

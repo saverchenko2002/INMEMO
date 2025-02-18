@@ -12,6 +12,9 @@ from controllers.menu_controllers.filters_controller import FiltersController
 from ui.command_classes.tabs_component_command import TabsComponentCommand
 from controllers.component_controllers.tabs_component_controller import TabsComponentController
 
+from ui.command_classes.image_thumbnail_tile_component_command import ImageThumbnailTileComponentCommand
+from controllers.component_controllers.image_thumbnail_tile_component_controller import ImageThumbnailTileComponentController
+
 from core.app_state_service import AppStateService
 
 
@@ -20,6 +23,7 @@ def register_controllers():
     ControllerRegistry.register(EditCommand, EditController())
     ControllerRegistry.register(FiltersCommand, FiltersController())
 
+    ControllerRegistry.register(ImageThumbnailTileComponentCommand, ImageThumbnailTileComponentController())
     ControllerRegistry.register(TabsComponentCommand, TabsComponentController())
 
 

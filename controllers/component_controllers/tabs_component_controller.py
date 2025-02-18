@@ -4,6 +4,7 @@ from core.base.controller import Controller
 from core.app_state_service import AppStateService
 
 from utils.decorators.app_status_decorator import with_app_status_change
+from utils.decorators.log_comand_execution_decorator import log_command_execution
 
 from config.constants import AppStateConstants
 
@@ -13,7 +14,6 @@ from ui.components.tabs_component.tabs_component_commands.move_image_command imp
 from ui.config.constants import MoveToTabConstants
 
 from controllers.component_controllers_helpers.move_image_helper import move_image, move_update_tab_map
-
 class TabsComponentController(Controller):
     def __init__(self):
         super().__init__()
@@ -21,6 +21,7 @@ class TabsComponentController(Controller):
         self.add_handler(ChangePrimaryImageCommand, self.handle_change_primary_image)
         self.add_handler(MoveImageCommand, self.handle_move_image)
 
+    @log_command_execution
     def handle_change_primary_image(self, command):
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
         input_primary_image_path = command.__dict__.get(AppStateConstants.PRIMARY_IMAGE_PATH.value)
@@ -28,6 +29,7 @@ class TabsComponentController(Controller):
             AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, input_primary_image_path)
 
     @with_app_status_change
+    @log_command_execution
     def handle_move_image(self, command):
         source_image_path = command.__dict__.get(MoveToTabConstants.SOURCE_IMAGE_PATH.value)
         target_folder_name = command.__dict__.get(MoveToTabConstants.TARGET_FOLDER_NAME.value)

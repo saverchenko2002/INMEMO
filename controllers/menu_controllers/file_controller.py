@@ -10,6 +10,7 @@ from menu.commands.file_commands.import_image_command import ImportImageCommand
 from menu.commands.file_commands.open_project_command import OpenProjectCommand
 
 from utils.decorators.app_status_decorator import with_app_status_change
+from utils.decorators.log_comand_execution_decorator import log_command_execution
 
 from controllers.menu_controllers_helpers.import_image_helper import (get_import_directory,
                                                                       get_image_path,
@@ -29,9 +30,8 @@ class FileController(Controller):
         self.add_handler(ImportImageCommand, self.handle_import_image)
 
     @with_app_status_change
+    @log_command_execution
     def handle_import_image(self, command):
-
-        print(f"Обработка команды {command.__class__.__name__}")
 
         project_directory = AppStateService().get_state(AppStateConstants.PROJECT_DIRECTORY.value)
         image_file_path = get_image_path()
@@ -47,16 +47,14 @@ class FileController(Controller):
 
         AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, import_directory)
 
+    @log_command_execution
     def handle_new_project(self, command):
-
-        print(f"Обработка команды {command.__class__.__name__}")
-
         AppStateService().set_state(AppStateConstants.PROJECT_DIRECTORY.value, new_project())
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, {})
 
     @with_app_status_change
+    @log_command_execution
     def handle_open_project(self, command):
-        print(f"Обработка команды {command.__class__.__name__}")
         project_directory = new_project()
 
         subdirs = [

@@ -1,8 +1,8 @@
 from core.base.command import Command
-from menu.commands.command_classes.file_command import FileCommand
+from menu.commands.command_classes.filters_command import FiltersCommand
 
 
-class NewProjectCommand(Command, FileCommand):
+class InitRembgCommand(Command, FiltersCommand):
     def __init__(self):
         super().__init__()
         self.notify_observers()

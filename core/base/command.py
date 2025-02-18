@@ -1,11 +1,13 @@
 from abc import ABC, abstractmethod
 
 from core.command_publisher import CommandPublisher
+import logging
 
 
 class Command(ABC):
     def __init__(self, **kwargs):
         self.__dict__.update(kwargs)
+        logging.info(f'init class {self.__class__.__name__}')
         pass
 
     @abstractmethod
