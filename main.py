@@ -8,7 +8,7 @@ from ui.main_window import MainWindow
 
 
 def main():
-    logging.basicConfig(level=logging.ERROR)
+    logging.basicConfig(level=logging.INFO)
     initialize_services()
     register_controllers()
 
