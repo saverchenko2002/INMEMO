@@ -11,6 +11,12 @@ class MoveToTabConstants(Enum):
     TARGET_FOLDER_NAME = 'target_folder_name'
     SOURCE_IMAGE_PATH = 'source_image_path'
 
+class RemoveTabConstants(Enum):
+    REMOVE_TAB_NAME = 'remove_tab_name'
+
+class ChangeTabConstants(Enum):
+    CHANGE_TAB_NAME = 'change_tab_name'
+
 class OperationConstants(Enum):
     OPERATION_HEADER = 'Image Operations'
     CONTROL_COMMAND = 'Swap Images'

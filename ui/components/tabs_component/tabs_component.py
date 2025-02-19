@@ -1,4 +1,4 @@
-from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTabWidget
+from PyQt6.QtWidgets import QWidget, QVBoxLayout, QTabWidget, QMessageBox
 
 from models.tabs_component_model import TabsComponentModel
 
@@ -8,8 +8,10 @@ from ui.components.thumbnail_listview_component.thumbnail_listview_component imp
 
 from ui.components.tabs_component.tabs_component_commands.change_primary_image_command import ChangePrimaryImageCommand
 from ui.components.tabs_component.tabs_component_commands.move_image_command import MoveImageCommand
+from ui.components.tabs_component.tabs_component_commands.remove_tab_command import RemoveTabCommand
+from ui.components.tabs_component.tabs_component_commands.change_tab_command import ChangeTabCommand
 
-from ui.config.constants import DragDropConstants, MoveToTabConstants
+from ui.config.constants import DragDropConstants, MoveToTabConstants, RemoveTabConstants, ChangeTabConstants
 from config.constants import AppStateConstants
 import os
 import json
@@ -26,24 +28,48 @@ class TabsComponent(QWidget):
         self.tab_widget = QTabWidget()
         self.layout.addWidget(self.tab_widget)
         self.setLayout(self.layout)
-
+        self.tab_widget.setTabsClosable(True)
+        self.tab_widget.tabCloseRequested.connect(self._close_tab)
+        self.tab_widget.currentChanged.connect(self._on_tab_changed)
         self.setAcceptDrops(True)
 
         self.setStyleSheet("border: 1px solid red;")
 
-
-
-
-
     def react_state_update(self, key, value):
 
         if key == AppStateConstants.PRIMARY_TAB.value:
-            self.set_active_tab_by_name(value)
+            self.model.primary_tab = value
+            if value:
+                self.set_active_tab_by_name(value)
+
         elif key == AppStateConstants.TAB_IMAGES_MAP.value:
-
             self.update_tab_images(value)
-
             self.model.tab_images_map = value
+
+    def _close_tab(self, index):
+
+        tab_name = self.tab_widget.tabText(index)
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.setWindowTitle("Подтверждение удаления")
+        msg_box.setText(f"Вы уверены, что хотите удалить '{tab_name}'?")
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg_box.setDefaultButton(QMessageBox.StandardButton.No)
+        response = msg_box.exec()
+
+        if response == QMessageBox.StandardButton.Yes:
+            self.tab_widget.currentChanged.disconnect(self._on_tab_changed)
+            widget = self.tab_widget.widget(index)
+            self.tab_widget.removeTab(index)
+            if widget:
+                widget.deleteLater()
+            self.tab_widget.currentChanged.connect(self._on_tab_changed)
+
+            return RemoveTabCommand(**{RemoveTabConstants.REMOVE_TAB_NAME.value: tab_name})
+
+    def _on_tab_changed(self, index):
+        tab_name = self.tab_widget.tabText(index)
+        return ChangeTabCommand(**{ChangeTabConstants.CHANGE_TAB_NAME.value: tab_name})
 
     def dragEnterEvent(self, event):
         if event.mimeData().hasText():
@@ -51,7 +77,7 @@ class TabsComponent(QWidget):
 
     def dragMoveEvent(self, event):
         tab_bar = self.tab_widget.tabBar()
-        tab_index = tab_bar.tabAt(event.position().toPoint())  # Получаем индекс вкладки, на которую наведен курсор
+        tab_index = tab_bar.tabAt(event.position().toPoint())
 
         if tab_index != -1:
             self.tab_widget.setCurrentIndex(tab_index)
@@ -106,7 +132,6 @@ class TabsComponent(QWidget):
                             thumbnail_listview.remove_tile(image)
             else:
                 self.add_tab(tab_name, images)
-
 
     def get_existing_tabs(self):
         return [self.tab_widget.tabText(i) for i in range(self.tab_widget.count())]

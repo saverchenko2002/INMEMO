@@ -14,7 +14,9 @@ class ImageContainerComponent(QWidget):
 
         self.model = ImageContainerComponentModel()
 
-        self.image_label = QLabel('Изображение не загружено')
+        self.text = 'Изображение не загружено'
+
+        self.image_label = QLabel(self.text)
         self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.image_label.setScaledContents(True)
 
@@ -24,7 +26,10 @@ class ImageContainerComponent(QWidget):
 
     def react_state_update(self, key, value):
         self.model[key] = value
-        self.set_image(value)
+        if value:
+            self.set_image(value)
+        else:
+            self.image_label.setText(self.text)
 
     def set_image(self, image_path):
         pixmap = QPixmap(image_path)
