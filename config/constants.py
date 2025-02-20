@@ -1,6 +1,7 @@
 from enum import Enum
 
 
+
 class AppStateConstants(Enum):
     PROJECT_DIRECTORY = 'project_directory'
     IMPORT_DIRECTORY = 'import_directory'

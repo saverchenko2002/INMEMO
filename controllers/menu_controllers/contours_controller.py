@@ -5,9 +5,13 @@ from core.app_state_service import AppStateService
 
 from config.constants import AppStateConstants
 
+from schema.ImageModel import ImageModel
+from ui.config.constants import FileSystemControlFlags
+
 from menu.commands.contours_commands.find_contours_command import FindContoursCommand
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.log_comand_execution_decorator import log_command_execution
+from utils.decorators.reset_filesystem_flags import reset_filesystem_flags
 
 from menu.commands.contours_commands.draw_contours_command import DrawContoursCommand
 
@@ -41,6 +45,7 @@ class ContoursController(Controller):
 
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_find_contours(self, command):
         dialog = ComboEnumDialogComponent([ContoursRetrieveOptions, ContoursChainMethods])
@@ -51,11 +56,12 @@ class ContoursController(Controller):
             project_directory = AppStateService().get_state(AppStateConstants.PROJECT_DIRECTORY.value)
             primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
 
-            new_image_filepath = perform_draw_contours(project_directory, primary_image_path, selections[0], selections[1])
-
+            new_image_filepath, copied_image_filepath = perform_draw_contours(project_directory, primary_image_path, selections[0], selections[1])
+            image_paths = [new_image_filepath, copied_image_filepath]
             tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
+            image_models = [ImageModel(current_image_path=image_path, filesystem_flag=FileSystemControlFlags.ADD_F) for image_path in image_paths]
 
-            updated_tab_images_map = add_images_to_tab_map(os.path.dirname(new_image_filepath), [new_image_filepath], tab_images_map)
+            updated_tab_images_map = add_images_to_tab_map(os.path.dirname(new_image_filepath), image_models, tab_images_map)
 
 
             AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)

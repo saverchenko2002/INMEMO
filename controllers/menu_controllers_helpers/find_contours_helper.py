@@ -17,10 +17,10 @@ def perform_draw_contours(project_directory, image_file_path, retrieve_option, c
 
     if image_data is not None:
         cv2.imwrite(output_image_path, image_data)
-        return output_image_path
+        return output_image_path, copied_image_file_path
     else:
         logging.error("Ошибка: draw_contours_method вернул None")
-        return copied_image_file_path
+        return copied_image_file_path, output_image_path
 def get_contours_directory(project_directory):
     contours_directory = os.path.join(project_directory, 'Contours')
     if not os.path.exists(contours_directory):

@@ -6,12 +6,13 @@ from models.thumbnail_listview_component_model import ThumbnailListviewComponent
 
 from ui.components.image_thumbnail_tile_component.image_thumbnail_tile_component import ImageThumbnailTileComponent
 
+from schema.ImageModel import ImageModel
 
 class ThumbnailListviewComponent(QWidget):
 
     list_item_clicked = pyqtSignal(str)
 
-    def __init__(self, images):
+    def __init__(self, images: list[ImageModel]):
         super().__init__()
         self.model = ThumbnailListviewComponentModel(images)
 
@@ -34,23 +35,57 @@ class ThumbnailListviewComponent(QWidget):
         self.create_listview()
 
     def create_listview(self):
-        for image_path in self.model.images:
-            self.add_tile(image_path)
+        for image in self.model.images:
+            self.add_tile(image)
 
-    def add_tile(self, image_path):
-        thumbnail = ImageThumbnailTileComponent(image_path)
+    def add_tile(self, image):
+        self.model.images.append(image)
+        thumbnail = ImageThumbnailTileComponent(image)
         thumbnail.clicked.connect(self.on_tile_clicked)
         self.list_layout.addWidget(thumbnail)
 
-    def remove_tile(self, image_path):
+
+    def remove_tile(self, image):
         for i in range(self.list_layout.count()):
             widget = self.list_layout.itemAt(i).widget()
-            if widget.model.image_path == image_path:
+            if widget.model.current_image_path == image.current_image_path:
                 self.list_layout.removeWidget(widget)
                 widget.deleteLater()
                 break
 
-        self.model.images = [img for img in self.model.images if img != image_path]
+        self.model.images = [img for img in self.model.images if img.current_image_path != image.current_image_path]
+
+    def rename_tile(self, image):
+        print(f"rename_tile called with image: {image}")  # Лог вызова
+
+        if self.list_layout is None:
+            print("Error: self.list_layout is None!")
+            return  # Предотвращаем краш
+
+        count = self.list_layout.count()
+        print(f"List layout count: {count}")
+
+        for i in range(count):
+            item = self.list_layout.itemAt(i)
+            if item is None:
+                print(f"Error: itemAt({i}) returned None!")
+                continue
+
+            widget = item.widget()
+            if widget is None:
+                print(f"Error: widget at index {i} is None!")
+                continue
+
+            if not hasattr(widget, "model"):
+                print(f"Error: widget at index {i} has no attribute 'model'!")
+                continue
+
+            print(f"Checking widget at index {i}: {widget.model.original_image_path}")
+
+            if widget.model.original_image_path == image.original_image_path:
+                print(f"Match found! Updating tile name to {image.current_image_path}")
+                widget.update_tile_name(image.current_image_path)
+                break
 
     def update_listview(self, images):
         self.model.images.extend(images)
@@ -59,4 +94,13 @@ class ThumbnailListviewComponent(QWidget):
             self.add_tile(image_path)
 
     def on_tile_clicked(self, image_path):
+        print('что я содержу в себе')
+        for i in range(self.list_layout.count()):
+            item = self.list_layout.itemAt(i)
+            if item is None:
+                print(f"Error: itemAt({i}) returned None!")
+                continue
+
+            widget = item.widget()
+            print(widget.model)
         self.list_item_clicked.emit(image_path)

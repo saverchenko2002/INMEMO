@@ -1,3 +1,5 @@
+import copy
+import logging
 import os
 
 from core.app_state_service import AppStateService
@@ -11,6 +13,7 @@ from menu.commands.file_commands.open_project_command import OpenProjectCommand
 
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.log_comand_execution_decorator import log_command_execution
+from utils.decorators.reset_filesystem_flags import reset_filesystem_flags
 
 from controllers.menu_controllers_helpers.import_image_helper import (get_import_directory,
                                                                       get_image_path,
@@ -20,6 +23,8 @@ from controllers.menu_controllers_helpers.import_image_helper import (get_import
 
 from controllers.menu_controllers_helpers.new_project_helper import new_project
 
+from schema.ImageModel import ImageModel
+from ui.config.constants import FileSystemControlFlags
 
 class FileController(Controller):
     def __init__(self):
@@ -30,6 +35,7 @@ class FileController(Controller):
         self.add_handler(ImportImageCommand, self.handle_import_image)
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_import_image(self, command):
 
@@ -39,7 +45,9 @@ class FileController(Controller):
         image_file_path = copy_image(image_file_path, import_directory)
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
-        updated_images_map = add_image_to_tab_map(import_directory, image_file_path, tab_images_map)
+        image_model = ImageModel(current_image_path=image_file_path, filesystem_flag=FileSystemControlFlags.ADD_F)
+        logging.info(image_model)
+        updated_images_map = add_image_to_tab_map(import_directory, image_model, tab_images_map)
 
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, image_file_path)
 
@@ -53,6 +61,7 @@ class FileController(Controller):
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, {})
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_open_project(self, command):
         project_directory = new_project()
@@ -69,7 +78,10 @@ class FileController(Controller):
 
         for dir_ in subdirs:
             images = [
-                os.path.join(dir_, file)
+                ImageModel(
+                    current_image_path=os.path.join(dir_, file),
+                    filesystem_flag=FileSystemControlFlags.ADD_F
+                )
                 for file in os.listdir(dir_)
                 if file.lower().endswith(('.png', '.jpg', '.jpeg'))
             ]
@@ -80,7 +92,7 @@ class FileController(Controller):
             return
 
         primary_tab, primary_image = next(
-            ((dir_, images[0]) for dir_, images in tab_images_map.items() if images),
+            ((dir_, images[0].original_image_path) for dir_, images in tab_images_map.items() if images),
             (None, None)
         )
 
@@ -90,5 +102,4 @@ class FileController(Controller):
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, primary_tab)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, primary_image)
-
 

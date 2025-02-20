@@ -5,6 +5,7 @@ from core.app_state_service import AppStateService
 
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.log_comand_execution_decorator import log_command_execution
+from utils.decorators.reset_filesystem_flags import reset_filesystem_flags
 
 from config.constants import AppStateConstants
 
@@ -17,7 +18,7 @@ from ui.config.constants import MoveToTabConstants, RemoveTabConstants, ChangeTa
 
 from controllers.component_controllers_helpers.move_image_helper import move_image, move_update_tab_map
 from controllers.component_controllers_helpers.remove_tab_helper import get_primary_content, remove_directory
-
+import logging
 
 class TabsComponentController(Controller):
     def __init__(self):
@@ -59,11 +60,16 @@ class TabsComponentController(Controller):
     @log_command_execution
     def handle_change_primary_image(self, command):
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
+        logging.info(primary_image_path)
         input_primary_image_path = command.__dict__.get(AppStateConstants.PRIMARY_IMAGE_PATH.value)
+        print(primary_image_path)
+        print(input_primary_image_path)
+        logging.info(primary_image_path)
         if primary_image_path != input_primary_image_path:
             AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, input_primary_image_path)
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_move_image(self, command):
         source_image_path = command.__dict__.get(MoveToTabConstants.SOURCE_IMAGE_PATH.value)

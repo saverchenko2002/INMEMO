@@ -5,7 +5,7 @@ from core.app_state_service import AppStateService
 from config.constants import AppStateConstants
 from menu.config.constants import MenuCommandsConstants
 from processing.image.constants import MorphologicalConstants
-
+from ui.config.constants import FileSystemControlFlags
 from core.base.controller import Controller
 
 from menu.commands.filters_commands.init_clustering_command import InitClusteringCommand
@@ -19,6 +19,7 @@ from menu.commands.filters_commands.init_invert_mask_command import InitInvertMa
 
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.log_comand_execution_decorator import log_command_execution
+from utils.decorators.reset_filesystem_flags import reset_filesystem_flags
 
 from processing.image.utils import save_image
 
@@ -44,6 +45,8 @@ from controllers.menu_controllers_helpers.init_threshold_helper import perform_t
 from controllers.menu_controllers_helpers.init_interpolation_helper import perform_interpolation, get_image_size
 from controllers.menu_controllers_helpers.init_invert_mask_helper import perform_invert_mask
 
+from schema.ImageModel import ImageModel
+
 class FiltersController(Controller):
     def __init__(self):
         super().__init__()
@@ -56,8 +59,9 @@ class FiltersController(Controller):
         self.add_handler(InitThresholdCommand, self.handle_init_threshold)
         self.add_handler(InitInterpolationCommand, self.handle_init_interpolation)
         self.add_handler(InitInvertMaskCommand, self.handle_init_invert_mask)
-
+    #не рефрешится
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_init_invert_mask(self, command):
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
@@ -72,6 +76,7 @@ class FiltersController(Controller):
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_init_interpolation(self, command):
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
@@ -87,12 +92,15 @@ class FiltersController(Controller):
 
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
-        updated_tab_images_map = add_images_to_tab_map(os.path.dirname(filename), [filename], tab_images_map)
+        image_model = ImageModel(current_image_path=filename, filesystem_flag=FileSystemControlFlags.ADD_F)
+
+        updated_tab_images_map = add_images_to_tab_map(os.path.dirname(filename), [image_model], tab_images_map)
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_init_threshold(self, command):
 
@@ -108,12 +116,18 @@ class FiltersController(Controller):
 
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
-        updated_tab_images_map = add_images_to_tab_map(os.path.dirname(filename), [filename], tab_images_map)
+        print(f"Filename: {filename}")
+        print(f"Type of filename: {type(filename)}")
+
+        image_model = ImageModel(current_image_path=filename, filesystem_flag=FileSystemControlFlags.ADD_F)
+
+        updated_tab_images_map = add_images_to_tab_map(os.path.dirname(filename), [image_model], tab_images_map)
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_init_clustering(self, command):
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
@@ -126,12 +140,15 @@ class FiltersController(Controller):
 
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
-        updated_tab_images_map = add_images_to_tab_map(clustering_directory, clustering_image_paths, tab_images_map)
+        image_models = [ImageModel(current_image_path=image_path, filesystem_flag=FileSystemControlFlags.ADD_F) for image_path in clustering_image_paths]
+
+        updated_tab_images_map = add_images_to_tab_map(clustering_directory, image_models, tab_images_map)
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, clustering_directory)
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_init_erosion(self, command):
         morphology_type = MorphologicalConstants.MORPH_EROSION.name
@@ -160,7 +177,9 @@ class FiltersController(Controller):
         image_paths.append(copied_image)
         image_paths.append(image_path)
 
-        updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_paths, tab_images_map)
+        image_models = [ImageModel(current_image_path=image_path, filesystem_flag=FileSystemControlFlags.ADD_F) for image_path in image_paths]
+
+        updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_models, tab_images_map)
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, image_path)
@@ -168,6 +187,7 @@ class FiltersController(Controller):
 
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_init_dilation(self, command):
         morphology_type = MorphologicalConstants.MORPH_EROSION.name
@@ -197,13 +217,16 @@ class FiltersController(Controller):
         image_paths.append(copied_image)
         image_paths.append(image_path)
 
-        updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_paths, tab_images_map)
+        image_models = [ImageModel(current_image_path=image_path, filesystem_flag=FileSystemControlFlags.ADD_F) for image_path in image_paths]
+
+        updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_models, tab_images_map)
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, image_path)
         AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, morphology_directory)
 
     @with_app_status_change
+    @reset_filesystem_flags
     @log_command_execution
     def handle_init_morphology(self, command):
         logging.debug(f"Обработка команды {command.__class__.__name__} "
@@ -236,25 +259,29 @@ class FiltersController(Controller):
         image_paths.append(copied_image)
         image_paths.append(image_path)
 
-        updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_paths, tab_images_map)
+        image_models = [ImageModel(current_image_path=image_path, filesystem_flag=FileSystemControlFlags.ADD_F) for image_path in image_paths]
+
+        updated_tab_images_map = add_images_to_tab_map(morphology_directory, image_models, tab_images_map)
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, image_path)
         AppStateService().set_state(AppStateConstants.PRIMARY_TAB.value, morphology_directory)
 
     @with_app_status_change
+    @reset_filesystem_flags
+    @log_command_execution
     def handle_init_rembg(self, command):
-
-        primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
-        image_data = rembg_method(primary_image_path)
-        filename = f'{os.path.splitext(os.path.basename(primary_image_path))[0]}_rembg_.png'
-        directory = os.path.dirname(primary_image_path)
-        image_path = os.path.join(directory, filename)
-        filename = save_image(image_path, image_data, True)
-
-        tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP)
-
-        updated_tab_images_map = add_images_to_tab_map(directory,[filename], tab_images_map)
-
-        AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
-        AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
+        pass
+        # primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
+        # image_data = rembg_method(primary_image_path)
+        # filename = f'{os.path.splitext(os.path.basename(primary_image_path))[0]}_rembg_.png'
+        # directory = os.path.dirname(primary_image_path)
+        # image_path = os.path.join(directory, filename)
+        # filename = save_image(image_path, image_data, True)
+        #
+        # tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP)
+        #
+        # updated_tab_images_map = add_images_to_tab_map(directory,[filename], tab_images_map)
+        #
+        # AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
+        # AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)

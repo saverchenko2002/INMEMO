@@ -2,7 +2,7 @@ import os.path
 
 from PyQt6.QtWidgets import QInputDialog, QMessageBox
 import copy
-
+from schema.ImageModel import ImageModel
 def get_clusters_number():
     while True:
         num, ok = QInputDialog.getInt(None, "Ввод числа", "Введите натуральное число:", min=2)
@@ -21,16 +21,16 @@ def create_clustering_directory(project_directory, image_path):
     return os.path.normpath(clustering_directory)
 
 
-def add_images_to_tab_map(directory_path, image_file_paths, tab_images_map):
+def add_images_to_tab_map(directory_path, image_models: list[ImageModel], tab_images_map):
     """
     :param directory_path:
     :type directory_path: str
-    :param image_file_paths:
-    :type image_file_paths: list[str]
+    :param image_models:
+    :type image_models: list[ImageModel]
     :param tab_images_map:
-    :type tab_images_map: dict[str, list[str]]
+    :type tab_images_map: dict[str, list[ImageModel]]
     :rtype: dict[str, list[str]]
     """
     updated_tab_images_map = copy.deepcopy(tab_images_map)
-    updated_tab_images_map.setdefault(directory_path, []).extend(image_file_paths)
+    updated_tab_images_map.setdefault(directory_path, []).extend(image_models)
     return updated_tab_images_map
