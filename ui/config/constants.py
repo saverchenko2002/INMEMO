@@ -11,6 +11,7 @@ class FileSystemControlFlags(StrEnum):
     RENAME_F = 'RENAME'
     MOVE_F = 'MOVE'
     NONE_F = 'NONE'
+    UPDATE_F = 'UPDATE'
 
 
 class DragDropConstants(Enum):
@@ -27,7 +28,7 @@ class RemoveTabConstants(Enum):
 class ChangeTabConstants(Enum):
     CHANGE_TAB_NAME = 'change_tab_name'
 
-class ChangeImageNameConstants(Enum):
+class ImageModelConstants(Enum):
     IMAGE_MODEL = 'image_model'
 
 class OperationConstants(Enum):

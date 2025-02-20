@@ -32,6 +32,9 @@ def reset_flags(self):
                 image.original_image_path = image.current_image_path
                 image.filesystem_flag = FileSystemControlFlags.NONE_F
                 updated_tab_images_map[dir_].append(image)
+            elif image.filesystem_flag == FileSystemControlFlags.UPDATE_F:
+                image.filesystem_flag = FileSystemControlFlags.NONE_F
+                updated_tab_images_map[dir_].append(image)
             elif image.filesystem_flag == FileSystemControlFlags.NONE_F:
                 updated_tab_images_map[dir_].append(image)
             if not images:

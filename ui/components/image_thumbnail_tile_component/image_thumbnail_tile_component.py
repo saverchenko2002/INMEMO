@@ -3,17 +3,18 @@ import os
 import json
 
 from PyQt6.QtGui import QDragEnterEvent, QDropEvent
-from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout
+from PyQt6.QtWidgets import QWidget, QLabel, QLineEdit, QHBoxLayout, QVBoxLayout, QPushButton, QStyle, QMessageBox
 from PyQt6.QtGui import QPixmap, QPainter, QDrag, QRegularExpressionValidator
-from PyQt6.QtCore import Qt, QMimeData, pyqtSignal, QRegularExpression, QMetaObject, Q_ARG
+from PyQt6.QtCore import Qt, QMimeData, pyqtSignal, QRegularExpression, QMetaObject, Q_ARG, QSize
 
 from ui.config.constants import DragDropConstants
 
 from ui.components.image_operation_dialog_component.image_operation_dialog_component import ImageOperationDialogComponent
 from ui.config.constants import OperationConstants
-from ui.config.constants import ChangeImageNameConstants
+from ui.config.constants import ImageModelConstants
 from ui.components.image_thumbnail_tile_component.image_thumbnail_tile_component_commands.manipulate_images_command import ManipulateImagesCommand
 from ui.components.image_thumbnail_tile_component.image_thumbnail_tile_component_commands.rename_image_command import RenameImageCommand
+from ui.components.image_thumbnail_tile_component.image_thumbnail_tile_component_commands.remove_image_command import RemoveImageCommand
 from schema.ImageModel import ImageModel
 
 class ImageThumbnailTileComponent(QWidget):
@@ -41,8 +42,29 @@ class ImageThumbnailTileComponent(QWidget):
         self.info_layout.addWidget(self.name_label)
         self.info_layout.addWidget(self.name_edit)
 
+        self.control_layout = QVBoxLayout()
+        self.control_layout.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        icon_size = QSize(
+            self.style().pixelMetric(QStyle.PixelMetric.PM_SmallIconSize),
+            self.style().pixelMetric(QStyle.PixelMetric.PM_SmallIconSize)
+        )
+
+        delete_button = QPushButton()
+        delete_button.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_BrowserStop))
+        delete_button.setFixedSize(icon_size)
+        delete_button.clicked.connect(self._delete_tile)
+        self.control_layout.addWidget(delete_button)
+
+        info_button = QPushButton()
+        info_button.setIcon(self.style().standardIcon(QStyle.StandardPixmap.SP_MessageBoxInformation))
+        info_button.setFixedSize(icon_size)
+        info_button.clicked.connect(self._show_object_info)
+        self.control_layout.addWidget(info_button)
+
         self.layout.addWidget(self.thumbnail_label)
         self.layout.addLayout(self.info_layout)
+        self.layout.addLayout(self.control_layout)
 
         self.setAcceptDrops(True)
 
@@ -53,6 +75,39 @@ class ImageThumbnailTileComponent(QWidget):
         regex = r'^[\w,\s-]+\.(jpg|jpeg|png)$'
         return QRegularExpressionValidator(QRegularExpression(regex))
 
+    def _show_object_info(self):
+        obj_info = ""
+        model_dict = self.model.dict()  # Получаем словарь атрибутов модели
+        for attr, value in model_dict.items():
+            if isinstance(value, dict):
+                obj_info += f"<b>{attr}</b>:<br>"
+                for sub_attr, sub_value in value.items():
+                    obj_info += f"  <b>{sub_attr}</b>: {sub_value}<br>"
+            else:
+                obj_info += f"<b>{attr}</b>: {value}<br>"
+
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.setWindowTitle("Информация об объекте")
+        msg_box.setText(obj_info)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.exec()
+
+    def _delete_tile(self):
+        image_name = os.path.basename(self.model.original_image_path)
+        msg_box = QMessageBox()
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        msg_box.setWindowTitle("Подтверждение удаления")
+        msg_box.setText(f"Вы уверены, что хотите удалить '{image_name}'?")
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        msg_box.setDefaultButton(QMessageBox.StandardButton.No)
+        response = msg_box.exec()
+
+        if response == QMessageBox.StandardButton.Yes:
+            RemoveImageCommand(**{
+                ImageModelConstants.IMAGE_MODEL.value: self.model
+            })
+            pass
 
     def _enable_editing(self, event):
         self.name_label.setVisible(False)
@@ -81,7 +136,7 @@ class ImageThumbnailTileComponent(QWidget):
                 self.name_label.setText(new_name)
                 self.model.current_image_path = os.path.join(os.path.dirname(self.model.current_image_path), new_name)
                 RenameImageCommand(**{
-                    ChangeImageNameConstants.IMAGE_MODEL.value: self.model
+                    ImageModelConstants.IMAGE_MODEL.value: self.model
                 })
             else:
                 self.name_edit.setStyleSheet("border: 1px solid red;")

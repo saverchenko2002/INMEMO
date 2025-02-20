@@ -22,7 +22,7 @@ def rename_image(image: ImageModel, unique_filename=False):
     return filename
 
 
-def update_tab_images_map(renamed_image: ImageModel, tab_images_map: dict[str, list[ImageModel]]):
+def update_tab_images_map_for_rename(renamed_image: ImageModel, tab_images_map: dict[str, list[ImageModel]]):
     updated_tab_images_map = copy.deepcopy(tab_images_map)
 
     for images in updated_tab_images_map.values():

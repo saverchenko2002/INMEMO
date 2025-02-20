@@ -105,6 +105,9 @@ class TabsComponent(QWidget):
         tab = QWidget()
         tab_layout = QVBoxLayout()
 
+        for image in images:
+            image.filesystem_flag = FileSystemControlFlags.NONE_F
+
         thumbnail_listview = ThumbnailListviewComponent(images)
         thumbnail_listview.list_item_clicked.connect(self.on_image_selected)
         tab_layout.addWidget(thumbnail_listview)
@@ -126,8 +129,11 @@ class TabsComponent(QWidget):
                 renamed_images = [
                     renamed_image for renamed_image in images if renamed_image.filesystem_flag == FileSystemControlFlags.RENAME_F
                 ]
+                updated_images = [
+                    updated_image for updated_image in images if updated_image.filesystem_flag == FileSystemControlFlags.UPDATE_F
+                ]
 
-                if added_images or removed_images or renamed_images:
+                if added_images or removed_images or renamed_images or updated_images:
                     tab_index = self.get_existing_tabs().index(tab_name)
                     existing_tab_widget = self.tab_widget.widget(tab_index)
                     thumbnail_listview = existing_tab_widget.layout().itemAt(0).widget()
@@ -136,13 +142,16 @@ class TabsComponent(QWidget):
                         for added_image in added_images:
                             print(added_image.filesystem_flag)
                             added_image.filesystem_flag = FileSystemControlFlags.NONE_F
-                            thumbnail_listview.add_tile(added_image)
+                            thumbnail_listview.add_tile_model(added_image)
                     elif removed_images:
                         for removed_image in removed_images:
                             thumbnail_listview.remove_tile(removed_image)
                     elif renamed_images:
                         for renamed_image in renamed_images:
                             thumbnail_listview.rename_tile(renamed_image)
+                    elif updated_images:
+                        for updated_image in updated_images:
+                            thumbnail_listview.update_tile(updated_image)
                         print('не ебу обновлён я или нет', self.model.tab_images_map)
             else:
                 self.add_tab(tab_name, images)

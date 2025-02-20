@@ -39,11 +39,20 @@ class ThumbnailListviewComponent(QWidget):
             self.add_tile(image)
 
     def add_tile(self, image):
-        self.model.images.append(image)
         thumbnail = ImageThumbnailTileComponent(image)
         thumbnail.clicked.connect(self.on_tile_clicked)
         self.list_layout.addWidget(thumbnail)
 
+    def add_tile_model(self, image):
+        self.model.images.append(image)
+        self.add_tile(image)
+
+    def update_tile(self, image):
+        for i in range(self.list_layout.count()):
+            widget = self.list_layout.itemAt(i).widget()
+            if widget.model.current_image_path == image.current_image_path:
+                widget.set_thumbnail(image.current_image_path)
+                break
 
     def remove_tile(self, image):
         for i in range(self.list_layout.count()):

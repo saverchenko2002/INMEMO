@@ -43,7 +43,7 @@ from processing.image.methods.morphology import (dilation_method,
 
 from controllers.menu_controllers_helpers.init_threshold_helper import perform_threshold
 from controllers.menu_controllers_helpers.init_interpolation_helper import perform_interpolation, get_image_size
-from controllers.menu_controllers_helpers.init_invert_mask_helper import perform_invert_mask
+from controllers.menu_controllers_helpers.init_invert_mask_helper import perform_invert_mask, update_flag
 
 from schema.ImageModel import ImageModel
 
@@ -71,8 +71,9 @@ class FiltersController(Controller):
         filename = save_image(image_file_path, image_data)
 
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
+        updated_tab_images_map = update_flag(primary_image_path, tab_images_map)
 
-        AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, tab_images_map)
+        AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, filename)
 
     @with_app_status_change
