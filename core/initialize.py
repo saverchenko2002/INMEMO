@@ -18,6 +18,9 @@ from controllers.component_controllers.image_thumbnail_tile_component_controller
 from menu.commands.command_classes.contours_command import ContoursCommand
 from controllers.menu_controllers.contours_controller import ContoursController
 
+from menu.commands.command_classes.preprocess_command import PreprocessCommand
+from controllers.menu_controllers.preprocess_controller import PreprocessController
+
 from core.app_state_service import AppStateService
 
 
@@ -26,6 +29,7 @@ def register_controllers():
     ControllerRegistry.register(EditCommand, EditController())
     ControllerRegistry.register(FiltersCommand, FiltersController())
     ControllerRegistry.register(ContoursCommand, ContoursController())
+    ControllerRegistry.register(PreprocessCommand, PreprocessController())
 
     ControllerRegistry.register(ImageThumbnailTileComponentCommand, ImageThumbnailTileComponentController())
     ControllerRegistry.register(TabsComponentCommand, TabsComponentController())

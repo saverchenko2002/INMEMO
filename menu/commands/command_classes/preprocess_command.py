@@ -1,0 +1,2 @@
+class PreprocessCommand:
+    pass

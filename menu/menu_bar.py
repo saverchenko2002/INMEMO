@@ -4,6 +4,7 @@ from menu.options.edit_option import EditOption
 from menu.options.filters_option import FiltersOption
 from menu.options.contours_option import ContoursOption
 
+from menu.options.preprocess_option import PreprocessOption
 
 class MenuBar(QMenuBar):
     def __init__(self, parent):
@@ -13,3 +14,4 @@ class MenuBar(QMenuBar):
         self.addMenu(EditOption(self))
         self.addMenu(FiltersOption(self))
         self.addMenu(ContoursOption(self))
+        self.addMenu(PreprocessOption(self))
