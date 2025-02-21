@@ -46,7 +46,7 @@ class FileController(Controller):
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
         image_model = ImageModel(current_image_path=image_file_path, filesystem_flag=FileSystemControlFlags.ADD_F)
-        logging.info(image_model)
+        logging.debug(image_model)
         updated_images_map = add_image_to_tab_map(import_directory, image_model, tab_images_map)
 
         AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, image_file_path)
@@ -88,7 +88,7 @@ class FileController(Controller):
             tab_images_map[dir_] = images
 
         if not tab_images_map:
-            print("Ошибка: В проекте нет изображений")
+            logging.info("Ошибка: В проекте нет изображений")
             return
 
         primary_tab, primary_image = next(

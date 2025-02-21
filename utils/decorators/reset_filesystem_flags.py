@@ -12,9 +12,7 @@ def reset_filesystem_flags(func):
         try:
             return func(self, command, *args, **kwargs)
         finally:
-            print('тебе похуй типо?')
             reset_flags(self)
-            print(AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value))
 
     return wrapper
 
@@ -39,5 +37,4 @@ def reset_flags(self):
                 updated_tab_images_map[dir_].append(image)
             if not images:
                 del updated_tab_images_map[dir_]
-    print('карта  В РЕЗЕТ ДЕКОРАТОРЕ', updated_tab_images_map)
     AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)

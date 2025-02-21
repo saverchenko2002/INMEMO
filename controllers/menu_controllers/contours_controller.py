@@ -39,7 +39,6 @@ class ContoursController(Controller):
         dialog = ComboEnumDialogComponent([ContoursRetrieveOptions, ContoursChainMethods])
         if dialog.exec() == QDialog.DialogCode.Accepted:
             selections = dialog.get_selections()
-            logging.info(selections)
             primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
             perform_turtle(primary_image_path, selections[0], selections[1])
 
@@ -52,7 +51,7 @@ class ContoursController(Controller):
 
         if dialog.exec() == QDialog.DialogCode.Accepted:
             selections = dialog.get_selections()
-            logging.info(selections)
+            logging.debug(selections)
             project_directory = AppStateService().get_state(AppStateConstants.PROJECT_DIRECTORY.value)
             primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
 

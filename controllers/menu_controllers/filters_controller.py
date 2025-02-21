@@ -83,7 +83,6 @@ class FiltersController(Controller):
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
         interpolation_type = command.__dict__.get(MenuCommandsConstants.INTERPOLATION_COMMAND_PAYLOAD.name)
 
-        logging.info(interpolation_type)
 
         image_size = get_image_size()
 
@@ -109,7 +108,6 @@ class FiltersController(Controller):
 
         threshold_type = command.__dict__.get(MenuCommandsConstants.THRESHOLD_COMMAND_PAYLOAD.name)
 
-        logging.info(threshold_type)
 
         new_filename_path, image_data = perform_threshold(primary_image_path, threshold_type)
 
@@ -117,8 +115,6 @@ class FiltersController(Controller):
 
         tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
-        print(f"Filename: {filename}")
-        print(f"Type of filename: {type(filename)}")
 
         image_model = ImageModel(current_image_path=filename, filesystem_flag=FileSystemControlFlags.ADD_F)
 

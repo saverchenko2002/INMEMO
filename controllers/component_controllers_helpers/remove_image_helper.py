@@ -1,6 +1,6 @@
 import copy
 import os
-import shutil
+import logging
 from schema.ImageModel import ImageModel
 from processing.image.utils import get_unique_filename
 from ui.config.constants import FileSystemControlFlags
@@ -11,9 +11,9 @@ def remove_image(image:ImageModel):
         try:
             os.remove(image_file_path)  # Удаляем файл
         except Exception as e:
-            print(f"Ошибка при удалении файла: {e}")
+            logging.info(f"Ошибка при удалении файла: {e}")
     else:
-        print(f"Файл {image_file_path} не существует.")
+        logging.info(f"Файл {image_file_path} не существует.")
 
 
 def update_tab_images_map_for_remove(image_to_remove: ImageModel, tab_images_map: dict[str, list[ImageModel]]):
@@ -25,7 +25,7 @@ def update_tab_images_map_for_remove(image_to_remove: ImageModel, tab_images_map
                 existing_image.filesystem_flag = FileSystemControlFlags.REMOVE_F
                 return updated_tab_images_map
 
-def find_new_primary_image(image_to_remove:ImageModel, primary_image_path, primary_tab, tab_images_map: dict[str, list[ImageModel]]):
+def find_new_primary_image(image_to_remove:ImageModel, primary_tab, tab_images_map: dict[str, list[ImageModel]]):
 
     images = tab_images_map[primary_tab]
     preserved_images = [image for image in images if image.current_image_path != image_to_remove.current_image_path]

@@ -44,7 +44,6 @@ class TabsComponent(QWidget):
                 self.set_active_tab_by_name(value)
 
         elif key == AppStateConstants.TAB_IMAGES_MAP.value:
-            print('мы реактим на смену карты в таб компоненте, но карта', value)
             self.update_tab_images(value)
             self.model.tab_images_map = value
 
@@ -140,7 +139,6 @@ class TabsComponent(QWidget):
 
                     if added_images:
                         for added_image in added_images:
-                            print(added_image.filesystem_flag)
                             added_image.filesystem_flag = FileSystemControlFlags.NONE_F
                             thumbnail_listview.add_tile_model(added_image)
                     elif removed_images:
@@ -152,60 +150,8 @@ class TabsComponent(QWidget):
                     elif updated_images:
                         for updated_image in updated_images:
                             thumbnail_listview.update_tile(updated_image)
-                        print('не ебу обновлён я или нет', self.model.tab_images_map)
             else:
                 self.add_tab(tab_name, images)
-
-        # print('value')
-        # print(value)
-        # print('self')
-        # print(self.model.tab_images_map)
-        # for directory, images in value.items():
-        #     tab_name = os.path.basename(directory)
-        #     if directory in self.model.tab_images_map:
-        #         existing_images = self.model.tab_images_map[directory]
-        #         added_images = [
-        #             image for image in images
-        #             if not any(existing_image.current_image_path == image.current_image_path for existing_image in
-        #                        existing_images)
-        #         ]
-        #
-        #         removed_images = [
-        #             image for image in existing_images
-        #             if
-        #             not any(existing_image.current_image_path == image.current_image_path for existing_image in images)
-        #         ]
-        #
-        #         renamed_images = [
-        #             image for image in images
-        #             if not any(existing_image.original_image_path == image.original_image_path for existing_image in
-        #                        existing_images)
-        #         ]
-        #
-        #         if added_images or removed_images or renamed_images:
-        #             tab_index = self.get_existing_tabs().index(tab_name)
-        #             existing_tab = self.tab_widget.widget(tab_index)
-        #             thumbnail_listview = existing_tab.layout().itemAt(0).widget()
-        #
-        #             if added_images:
-        #                 thumbnail_listview.update_listview(added_images)
-        #             elif removed_images:
-        #                 for image in removed_images:
-        #                     thumbnail_listview.remove_tile(image)
-        #             elif renamed_images:
-        #                 for image in renamed_images:
-        #                     thumbnail_listview.rename_tile(image)
-        #
-        #                     image.original_image_path = image.current_image_path
-        #
-        #                     for idx, existing_image in enumerate(self.model.tab_images_map[directory]):
-        #                         if existing_image.original_image_path == image.original_image_path:
-        #                             self.model.tab_images_map[directory][idx] = image
-        #                             break
-        #
-        #     else:
-        #         self.add_tab(tab_name, images)
-        #     logging.info(value)
 
     def get_existing_tabs(self):
         return [self.tab_widget.tabText(i) for i in range(self.tab_widget.count())]

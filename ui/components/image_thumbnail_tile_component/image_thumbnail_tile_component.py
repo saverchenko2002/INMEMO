@@ -114,25 +114,16 @@ class ImageThumbnailTileComponent(QWidget):
         self.name_edit.setVisible(True)
 
     def update_tile_name(self, name):
-        if not self.name_label:  # Проверяем, что name_label существует
-            logging.error("name_label is None")
-            return  # Выход из функции, если name_label не существует
-
-        logging.info(f"Updating tile name to: {name}")
         self.name_label.setText(os.path.basename(name))
-        print('self.model in update tile name')
-        print(self.model)
         self.model.original_image_path = name
         self.model.current_image_path = name
-        logging.info(f"After updating name: {self.name_label}")
-        print(self.model, 'Я ОБНОВЛЁН БРО')
+
     def _apply_name_change(self):
         new_name = self.name_edit.text().strip()
         if new_name and new_name != self.name_label.text():
             if self.name_edit.hasAcceptableInput():
                 self.model.current_image_path = os.path.join(os.path.dirname(self.model.current_image_path), new_name)
-                logging.info(self.model)
-                print('new_name', new_name)
+                logging.debug(self.model)
                 self.name_label.setText(new_name)
                 self.model.current_image_path = os.path.join(os.path.dirname(self.model.current_image_path), new_name)
                 RenameImageCommand(**{
@@ -187,7 +178,6 @@ class ImageThumbnailTileComponent(QWidget):
 
     def mousePressEvent(self, event):
         super().mousePressEvent(event)
-        print('ПОЛЕТЕЛ НАХУЙ', self.model.current_image_path)
         self.clicked.emit(self.model.current_image_path)
 
         self.setVisible(False)

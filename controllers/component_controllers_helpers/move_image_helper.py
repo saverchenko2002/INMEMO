@@ -29,10 +29,6 @@ def move_update_tab_map(source_image_path, target_image_path, tab_images_map):
 
     updated_tab_images_map[target_dir].append(ImageModel(current_image_path=target_image_path, filesystem_flag=FileSystemControlFlags.ADD_F))
 
-    # updated_tab_images_map[source_dir] = [img for img in tab_images_map[source_dir] if img.current_image_path != source_image_path]
-    #
-    # updated_tab_images_map[target_dir].append(ImageModel(current_image_path=target_image_path))
-
     return updated_tab_images_map
 
 

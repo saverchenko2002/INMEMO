@@ -32,10 +32,3 @@ def update_tab_images_map_for_rename(renamed_image: ImageModel, tab_images_map: 
                 existing_image.original_image_path = renamed_image.original_image_path
                 existing_image.filesystem_flag = FileSystemControlFlags.RENAME_F
                 return updated_tab_images_map
-
-    # for images in updated_tab_images_map.values():
-    #     for pre_update_image in images:
-    #         if pre_update_image.original_image_path == image.original_image_path:
-    #             pre_update_image.current_image_path = image.current_image_path
-    #             pre_update_image.original_image_path = pre_update_image.current_image_path
-    #             return updated_tab_images_map

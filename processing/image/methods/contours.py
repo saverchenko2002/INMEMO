@@ -5,7 +5,7 @@ import logging
 def contours_method(image_file_path, retrieve_option, chain_option):
     image_data = read_grayscale(image_file_path)
     contours, hierarchy = cv2.findContours(image_data, retrieve_option, chain_option)
-    logging.info(contours)
+    logging.debug(contours)
     return contours, hierarchy
 
 

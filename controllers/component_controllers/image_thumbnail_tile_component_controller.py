@@ -48,7 +48,7 @@ class ImageThumbnailTileComponentController(Controller):
         remove_image(image)
         updated_tab_images_map = update_tab_images_map_for_remove(image, tab_images_map)
         if primary_image_path == image.current_image_path:
-            primary_image_path = find_new_primary_image(image, primary_image_path, primary_tab, updated_tab_images_map)
+            primary_image_path = find_new_primary_image(image, primary_tab, updated_tab_images_map)
             AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, primary_image_path)
 
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
@@ -70,7 +70,6 @@ class ImageThumbnailTileComponentController(Controller):
         AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
 
         if source_image_path == primary_image_path:
-            print('але')
             AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, target_image_path)
 
 
