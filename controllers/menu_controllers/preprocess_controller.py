@@ -11,6 +11,10 @@ from menu.commands.preprocess_commands.init_ghe_command import InitGheCommand
 
 from menu.commands.preprocess_commands.init_gaussian_blur_command import InitGaussianBlurCommand
 
+from menu.commands.preprocess_commands.init_canny_edges_command import InitCannyEdgesCommand
+
+from ui.components.canny_preview_component.canny_preview_component import CannyPreviewComponent
+
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.reset_filesystem_flags import reset_filesystem_flags
 from utils.decorators.log_comand_execution_decorator import log_command_execution
@@ -26,6 +30,25 @@ class PreprocessController(Controller):
         self.add_handler(InitGheCommand, self.handle_init_ghe)
         self.add_handler(InitClaheCommand, self.handle_init_clahe)
         self.add_handler(InitGaussianBlurCommand, self.handle_init_gaussian_blur)
+        self.add_handler(InitCannyEdgesCommand, self.handle_init_canny_edges)
+
+    @with_app_status_change
+    @reset_filesystem_flags
+    @log_command_execution
+    def handle_init_canny_edges(self, command):
+        primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
+        dialog = CannyPreviewComponent(primary_image_path)
+        if dialog.exec():
+            new_image_path = dialog.get_new_file_path()
+            tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
+
+            updated_tab_images_map = add_images_to_tabs(
+                [ImageModel(current_image_path=new_image_path, filesystem_flag=FileSystemControlFlags.ADD_F)],
+                tab_images_map
+            )
+
+            AppStateService().set_state(AppStateConstants.TAB_IMAGES_MAP.value, updated_tab_images_map)
+            AppStateService().set_state(AppStateConstants.PRIMARY_IMAGE_PATH.value, new_image_path)
 
     @with_app_status_change
     @reset_filesystem_flags
