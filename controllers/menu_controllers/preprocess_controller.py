@@ -14,6 +14,9 @@ from menu.commands.preprocess_commands.init_gaussian_blur_command import InitGau
 from menu.commands.preprocess_commands.init_canny_edges_command import InitCannyEdgesCommand
 
 from ui.components.canny_preview_component.canny_preview_component import CannyPreviewComponent
+from ui.components.preview_operation_component.preview_operation_component import PreviewOperationComponent
+from ui.components.preview_operation_component.fields_constraints import OperationField, FieldTypes
+from processing.image.methods.edges import canny_method
 
 from utils.decorators.app_status_decorator import with_app_status_change
 from utils.decorators.reset_filesystem_flags import reset_filesystem_flags
@@ -37,9 +40,23 @@ class PreprocessController(Controller):
     @log_command_execution
     def handle_init_canny_edges(self, command):
         primary_image_path = AppStateService().get_state(AppStateConstants.PRIMARY_IMAGE_PATH.value)
-        dialog = CannyPreviewComponent(primary_image_path)
+        dialog = PreviewOperationComponent(
+            title='Canny Edges Detection Preview',
+            image_path=primary_image_path,
+            method_func=canny_method,
+            params=[
+                OperationField(field_type=FieldTypes.RANGE, param_name='threshold1', default_value=100, min_value=0,
+                               max_value=255, step=1),
+                OperationField(field_type=FieldTypes.RANGE, param_name='threshold2', default_value=200, min_value=0,
+                               max_value=255, step=1),
+                OperationField(field_type=FieldTypes.RANGE, param_name='aperture size', default_value=3, min_value=3, max_value=7, step=2),
+                OperationField(field_type=FieldTypes.CHECKBOX, param_name='l2gradient', default_value=False)
+                    ]
+        )
+        # dialog = CannyPreviewComponent(primary_image_path)
         if dialog.exec():
             new_image_path = dialog.get_new_file_path()
+            print(new_image_path)
             tab_images_map = AppStateService().get_state(AppStateConstants.TAB_IMAGES_MAP.value)
 
             updated_tab_images_map = add_images_to_tabs(
