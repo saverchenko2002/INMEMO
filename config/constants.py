@@ -10,6 +10,8 @@ class AppStateConstants(Enum):
     PRIMARY_TAB = 'primary_tab'
     PRIMARY_IMAGE_PATH = 'primary_image_path'
 
+    # CURRENT_TOOL = 'current_tool'
+
     APP_STATUS = 'app_status'
 
 
